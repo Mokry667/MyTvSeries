@@ -1,0 +1,150 @@
+﻿@model IEnumerable<MyTvSeries.Domain.Entities.Series>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TvDbId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieDbId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImdbId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OriginalName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Overview)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AiredFrom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AiredTo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AirDayOfWeek)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AirTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberOfSeasons)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberOfEpisodes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalRuntime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsImportEnabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastChangedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastChangedAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TvDbId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieDbId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImdbId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OriginalName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Overview)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AiredFrom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AiredTo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AirDayOfWeek)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AirTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfSeasons)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfEpisodes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalRuntime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserRating)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsImportEnabled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastChangedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastChangedAt)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

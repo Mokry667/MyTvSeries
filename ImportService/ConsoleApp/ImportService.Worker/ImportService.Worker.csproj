@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TheMovieDb\ImportService.TheMovieDb.Api\ImportService.TheMovieDb.Api.csproj" />
+    <ProjectReference Include="..\..\TheMovieDb\ImportService.TheMovieDb.Converter\ImportService.TheMovieDb.Converter.csproj" />
+    <ProjectReference Include="..\..\TheTvDb\ImportService.TheTvDb.Converter\ImportService.TheTvDb.Converter.csproj" />
+    <ProjectReference Include="..\..\TheTvDb\ImportService.TheTvDbApi\ImportService.TheTvDb.Api.csproj" />
+  </ItemGroup>
+
+</Project>

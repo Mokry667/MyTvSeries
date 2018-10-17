@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>251af9a6-b1b0-4b1a-96f0-58e4b171d0fa</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Domain\IdentityDomain\MyTvSeries.Identity.Ef\MyTvSeries.Identity.Ef.csproj" />
+    <ProjectReference Include="..\..\Domain\IdentityDomain\MyTvSeries.Identity.Migrations\MyTvSeries.Identity.Migrations.csproj" />
+    <ProjectReference Include="..\..\Domain\MyTvSeriesDomain\MyTvSeries.Domain.EF\MyTvSeries.Domain.Ef.csproj" />
+    <ProjectReference Include="..\..\Domain\MyTvSeriesDomain\MyTvSeries.Domain.Migrations\MyTvSeries.Domain.Migrations.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Services\" />
+  </ItemGroup>
+
+</Project>

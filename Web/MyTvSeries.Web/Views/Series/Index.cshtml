@@ -1,6 +1,6 @@
 ﻿@using X.PagedList
 @using X.PagedList.Mvc.Core
-@model IEnumerable<SeriesIndexViewModel>
+@model SeriesIndexSearchViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,36 +9,62 @@
 
 <h2>Series</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<form asp-action="Index" method="get">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="input-group">
+                 <input type="text" value="@Model.Keyword" class="form-control" placeholder="Search..." name="keyword"/>
+                <div class="input-group-btn">
+                    <button class="btn btn-primary" type="submit">
+                        @*                        <span class="glyphicon glyphicon-search"></span>*@
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <table class="table">
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.UserRating)
+            @Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().UserRating)
         </th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model) {
+    @foreach (var item in Model.ViewModels) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+            @if (item.PosterContent != null)
+            {
+                <div class="col-md-1">
+                    <img src="data:image;base64,@System.Convert.ToBase64String(item.PosterContent)" alt="~/images/no-image-available.png" class="pull-left" width="40" height="50"/>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-1">
+                    <img src="~/images/no-image-available.png" class="pull-left" width="40" height="50"/>
+                </div>
+            }
+                <div class="col-md-6">
+                    <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+                </div>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UserRating)
+                    @Html.DisplayFor(modelItem => item.UserRating)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
     }
     </tbody>
 </table>
-@Html.PagedListPager( (IPagedList)Model, page => Url.Action("Index", new { page }) )
+@Html.PagedListPager( (IPagedList)Model.ViewModels, page => Url.Action("Index", new { page, keyword = Model.Keyword }) )

@@ -23,9 +23,18 @@ namespace MyTvSeries.Web.Controllers
         }
 
         // GET: Series
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(int? page, string keyword)
         {
-            var allSeries = _context.Series.AsQueryable();
+            IQueryable<Series> allSeries = null;
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                allSeries = _context.Series.Where(x => x.Name.Contains(keyword)).AsQueryable();
+            }
+            else
+            {
+                allSeries = _context.Series.AsQueryable();
+            }
+
             var pageNumber = page ?? 1;
 
             var pageSize = 25;
@@ -40,14 +49,22 @@ namespace MyTvSeries.Web.Controllers
                 {
                     Id = series.Id,
                     Name = series.Name,
-                    UserRating = series.UserRating
+                    UserRating = series.UserRating,
+                    PosterContent = series.PosterContent
                 };
                 viewModels.Add(viewModel);
             }
 
             var pagedViewModels = new StaticPagedList<SeriesIndexViewModel>(viewModels, pageNumber, pageSize, pagedSeries.TotalItemCount);
 
-            return View(pagedViewModels);
+            var viewModelWithKeyword = new SeriesIndexSearchViewModel
+            {
+                ViewModels = pagedViewModels,
+                Keyword = keyword
+            };
+
+
+            return View(viewModelWithKeyword);
         }
 
         // GET: Series/Details/5
@@ -58,7 +75,7 @@ namespace MyTvSeries.Web.Controllers
                 return NotFound();
             }
 
-            var series = await _context.Series
+            var series = await _context.Series.Include(x => x.SeriesGenres).ThenInclude(x => x.Genre)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (series == null)
             {
@@ -82,8 +99,14 @@ namespace MyTvSeries.Web.Controllers
                 NumberOfSeasons = series.NumberOfSeasons,
                 NumberOfEpisodes = series.NumberOfEpisodes,
                 TotalRuntime = series.TotalRuntime,
-                PosterContent = series.PosterContent
+                PosterContent = series.PosterContent,
+                Genres = new List<Genre>()
             };
+
+            foreach (var seriesGenre in series.SeriesGenres)
+            {
+                viewModel.Genres.Add(seriesGenre.Genre);
+            }
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -108,58 +131,75 @@ namespace MyTvSeries.Web.Controllers
         // GET: Series/Details/5
         public async Task<IActionResult> Details(UserSeriesDetailViewModel viewModel)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Series series = null;
 
-            var userSeries = await _context.UsersSeries.FirstOrDefaultAsync(x => x.UserId == userId && x.SeriesId == viewModel.SeriesId);
-
-            if (userSeries == null)
+            if (ModelState.IsValid)
             {
-                userSeries = new UserSeries
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var userSeries =
+                    await _context.UsersSeries.FirstOrDefaultAsync(x =>
+                        x.UserId == userId && x.SeriesId == viewModel.SeriesId);
+
+                if (userSeries == null)
                 {
-                    SeriesId = viewModel.SeriesId,
-                    UserId = userId,
-                    Rating = (int) viewModel.SeriesRating,
-                    WatchStatus = viewModel.WatchStatus,
-                    CreatedAt = DateTime.UtcNow,
+                    userSeries = new UserSeries
+                    {
+                        SeriesId = viewModel.SeriesId,
+                        UserId = userId,
+                        Rating = (int) viewModel.SeriesRating,
+                        WatchStatus = viewModel.WatchStatus,
+                        CreatedAt = DateTime.UtcNow,
 
-                    // TODO fix this
-                    CreatedBy = 1
-                };
+                        // TODO fix this
+                        CreatedBy = 1
+                    };
 
-                _context.Add(userSeries);
+                    _context.Add(userSeries);
 
 
-                if (viewModel.SeriesRating != SeriesRating.NotRated)
+                    if (viewModel.SeriesRating != SeriesRating.NotRated)
+                    {
+                        series = await _context.Series.FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
+                        series.UserVotes++;
+                        var seriesRating = series.SeriesUsers.Sum(x => x.Rating);
+                        series.UserRating = (decimal) seriesRating / series.UserVotes;
+                        _context.Update(series);
+                    }
+                }
+                else
                 {
-                    var series = await _context.Series.FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
-                    series.UserVotes++;
+                    userSeries.WatchStatus = viewModel.WatchStatus;
+                    userSeries.Rating = (int) viewModel.SeriesRating;
+
+                    series = await _context.Series.FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
                     var seriesRating = series.SeriesUsers.Sum(x => x.Rating);
                     series.UserRating = (decimal) seriesRating / series.UserVotes;
-                    _context.Update(series);
 
+                    _context.Update(series);
+                    _context.Update(userSeries);
+                }
+
+
+                if (series != null)
+                {
                     viewModel.SiteRating = series.UserRating;
                     viewModel.PosterContent = series.PosterContent;
                 }
+
+                await _context.SaveChangesAsync();
+
+                return View(viewModel);
             }
             else
             {
-                userSeries.WatchStatus = viewModel.WatchStatus;
-                userSeries.Rating = (int) viewModel.SeriesRating;
-
-                var series = await _context.Series.FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
-                var seriesRating = series.SeriesUsers.Sum(x => x.Rating);
-                series.UserRating = (decimal)seriesRating / series.UserVotes;
-
-                _context.Update(series);
-                _context.Update(userSeries);
+                series = await _context.Series.FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
 
                 viewModel.SiteRating = series.UserRating;
                 viewModel.PosterContent = series.PosterContent;
+
+                return View(viewModel);
             }
-
-            await _context.SaveChangesAsync();
-
-            return View(viewModel);
         }
 
         // GET: Series/Create

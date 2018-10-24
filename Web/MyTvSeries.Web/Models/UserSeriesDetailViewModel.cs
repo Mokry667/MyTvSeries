@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using MyTvSeries.Domain.Entities;
 using MyTvSeries.Domain.Enums;
 using MyTvSeries.Web.Models.Enums;
+using MyTvSeries.Web.Models.Validators;
 
 namespace MyTvSeries.Web.Models
 {
@@ -38,6 +41,9 @@ namespace MyTvSeries.Web.Models
         [Display(Name = "Episodes")]
         public int NumberOfEpisodes { get; set; }
 
+        [Display(Name = "Genres")]
+        public List<Genre> Genres { get; set; }
+
 
         [Display(Name = "Total runtime")]
         public decimal TotalRuntime { get; set; }
@@ -49,10 +55,12 @@ namespace MyTvSeries.Web.Models
 
         public byte[] PosterContent { get; set; }
 
-        [Display(Name = "Watched seasons")]
+        [Display(Name = "Seasons")]
+        [SeasonNumberValidator("NumberOfSeasons")]
         public int SeasonsWatched { get; set; }
 
-        [Display(Name = "Watched episodes")]
+        [Display(Name = "Episodes")]
+        [EpisodeNumberValidator("NumberOfEpisodes")]
         public int EpisodesWatched { get; set; }
 
     }

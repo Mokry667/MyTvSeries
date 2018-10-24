@@ -1,4 +1,5 @@
-﻿@using MyTvSeries.Domain.Enums
+﻿@using Microsoft.Build.Tasks
+@using MyTvSeries.Domain.Enums
 @using MyTvSeries.Web.Models.Enums
 @model UserSeriesDetailViewModel
 
@@ -13,69 +14,81 @@
         @if (Model.PosterContent != null)
         {
             <div class="col-md-3">
-                <img src="data:image;base64,@System.Convert.ToBase64String(Model.PosterContent)" class="img-responsive pull-left" width="240" height="240" />
+                <img src="data:image;base64,@System.Convert.ToBase64String(Model.PosterContent)" alt="~/images/no-image-available.png" class="img-responsive pull-left" width="240" height="240"/>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-3">
+                <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="320"/>
             </div>
         }
         <div class="col-md-9">
-            <h1>@Model.Name</h1>
-            <p>
-                Original name:
-                @if (Model.OriginalName == null)
-                {
-                    @Model.Name
-                }
-                else
-                {
-                    @Model.OriginalName
-                }
-            </p>
-        </div>
-        <div class="col-md-2">
-            <h4>@Html.DisplayNameFor(model => model.SiteRating)</h4>
-            @Html.DisplayFor(model => model.SiteRating)
-        </div>
-        <div class="col-md-2">
-            <h4>@Html.DisplayNameFor(model => model.UserVotes)</h4>
-            @Html.DisplayFor(model => model.UserVotes)
-        </div>
-        <div class="col-md-9">
-            <h4>@Html.DisplayNameFor(model => model.Overview)</h4>
-            <p>@Html.DisplayFor(model => model.Overview)</p>
-        </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <h1>@Model.Name</h1>
+                    <p>
+                        Original name:
+                        @if (Model.OriginalName == null)
+                        {
+                            @Model.Name
+                        }
+                        else
+                        {
+                            @Model.OriginalName
+                        }
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <h4>@Html.DisplayNameFor(model => model.SiteRating)</h4>
+                    @Html.DisplayFor(model => model.SiteRating)
+                </div>
+                <div class="col-md-2">
+                    <h4>@Html.DisplayNameFor(model => model.UserVotes)</h4>
+                    @Html.DisplayFor(model => model.UserVotes)
+                </div>
+                <div class="col-md-9">
+                    <h4>@Html.DisplayNameFor(model => model.Overview)</h4>
+                    <p>@Html.DisplayFor(model => model.Overview)</p>
+                </div>
+            </div>
         <form asp-action="Details">
             <div class="row">
                 <div class="col-md-2">
                     <div class="form-group">
                         <label asp-for="EpisodesWatched" class="control-label"></label>
-                            <div class="input-group">
-                                <input asp-for="EpisodesWatched" class="form-control">
-                                <span class="input-group-addon">
-                                    / @Model.NumberOfEpisodes
-                                </span>
-                                <span asp-validation-for="EpisodesWatched" class="text-danger"></span>
-                            </div>
+                        <div class="input-group">
+                            <input asp-for="EpisodesWatched" class="form-control">
+                            <span class="input-group-addon">
+                                / @Model.NumberOfEpisodes
+                            </span>
+                        </div>
+                        <span asp-validation-for="EpisodesWatched" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
                         <label asp-for="SeasonsWatched" class="control-label"></label>
-                            <div class="input-group">
-                                <input asp-for="SeasonsWatched" class="form-control"/>
-                                <span class="input-group-addon">
-                                    / @Model.NumberOfSeasons
-                                </span>
-                                <span asp-validation-for="SeasonsWatched" class="text-danger"></span>
-                            </div>
+                        <div class="input-group">
+                            <input asp-for="SeasonsWatched" class="form-control"/>
+                            <span class="input-group-addon">
+                                / @Model.NumberOfSeasons
+                            </span>
+                        </div>
+                        <span asp-validation-for="SeasonsWatched" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-md-8"></div>
-                <div class="col-md-2">
+            </div>
+            <div class="row">
+                <div class="col-md-3">
                     <div class="form-group">
                         <select asp-for="WatchStatus" asp-items="Html.GetEnumSelectList<WatchStatus>()" class="form-control"></select>
                         <span asp-validation-for="WatchStatus" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
                         <select asp-for="SeriesRating" asp-items="Html.GetEnumSelectList<SeriesRating>()" class="form-control"></select>
                         <span asp-validation-for="SeriesRating" class="text-danger"></span>
@@ -87,6 +100,7 @@
                     </div>
                 </div>
             </div>
+            @* MOVE TO CONTROLLER *@
             <input asp-for="Name" type="hidden"/>
             <input asp-for="OriginalName" type="hidden"/>
             <input asp-for="Overview" type="hidden"/>
@@ -104,39 +118,45 @@
             <input asp-for="UserVotes" type="hidden"/>
         </form>
     </div>
-    <div class="row">
-        <div class="col-md-3 text-left">
-            <strong>@Html.DisplayNameFor(model => model.Status):</strong>
-            @Html.DisplayFor(model => model.Status)
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <strong>@Html.DisplayNameFor(model => model.Status):</strong>
+                @Html.DisplayFor(model => model.Status)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <strong>Aired:</strong>
+                @Html.DisplayFor(model => model.AiredFrom) - @Html.DisplayFor(model => model.AiredTo)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <strong>Broadcast time:</strong>
+                @Html.DisplayFor(model => model.AirTime) on @Html.DisplayFor(model => model.AirDayOfWeek)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <strong>@Html.DisplayNameFor(model => model.NumberOfEpisodes):</strong>
+                @Html.DisplayFor(model => model.NumberOfEpisodes)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <strong>@Html.DisplayNameFor(model => model.NumberOfSeasons):</strong>
+                @Html.DisplayFor(model => model.NumberOfSeasons)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <strong>@Html.DisplayNameFor(model => model.Genres):</strong>
+                @foreach (var genre in Model.Genres)
+                {
+                    @Html.DisplayFor(x => genre.Name)
+                    @Html.Raw(", ")
+                }
+            </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3 text-left">
-            <strong>Aired:</strong>
-            @Html.DisplayFor(model => model.AiredFrom) - @Html.DisplayFor(model => model.AiredTo)
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3 text-left">
-            <strong>Broadcast time:</strong>
-            @Html.DisplayFor(model => model.AirTime) on @Html.DisplayFor(model => model.AirDayOfWeek)
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3 text-left">
-            <strong>@Html.DisplayNameFor(model => model.NumberOfEpisodes):</strong>
-            @Html.DisplayFor(model => model.NumberOfEpisodes)
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3 text-left">
-            <strong>@Html.DisplayNameFor(model => model.NumberOfSeasons):</strong>
-            @Html.DisplayFor(model => model.NumberOfSeasons)
-        </div>
-    </div>
-</div>
-
-<div>
-@*    <a asp-action="Edit" asp-route-id="@Model.SeriesId">Edit</a> |*@
-    <a asp-action="Index">Back to List</a>
 </div>

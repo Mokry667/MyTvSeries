@@ -50,6 +50,7 @@ namespace ImportService.TheMovieDb.Converter
                 AiredTo = lastAirDateValue,
                 NumberOfSeasons = Convert.ToInt32(seriesJson.NumberOfSeasons),
                 NumberOfEpisodes = Convert.ToInt32(seriesJson.NumberOfEpisodes),
+                PosterName = seriesJson.PosterPath
                 // TODO episode runtime can have mutliple values
                 // TODO many to many mappings
             };

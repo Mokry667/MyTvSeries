@@ -5,8 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyTvSeries.Domain.Ef;
-using MyTvSeries.Identity.Ef;
-using MyTvSeries.Identity.Entities;
+using MyTvSeries.Domain.Identity;
 
 namespace MyTvSeries.Web
 {
@@ -29,12 +28,12 @@ namespace MyTvSeries.Web
             services.AddDbContext<TvSeriesContext>(options => options.UseSqlServer(tvDbConnection, 
                 x => x.MigrationsAssembly("MyTvSeries.Domain.Migrations")));
 
-            var identityDbConnection = Configuration["identityDbConnection"];
+/*            var identityDbConnection = Configuration["identityDbConnection"];
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(identityDbConnection,
-                x => x.MigrationsAssembly("MyTvSeries.Identity.Migrations")));
+                x => x.MigrationsAssembly("MyTvSeries.Identity.Migrations")));*/
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<TvSeriesContext>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
         }

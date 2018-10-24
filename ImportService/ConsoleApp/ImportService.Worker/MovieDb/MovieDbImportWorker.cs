@@ -58,6 +58,8 @@ namespace ImportService.Worker.MovieDb
 
         public async Task Initialize()
         {
+            await _movieDbApi.SetUpImageApi();
+
             _importSeriesIds = new List<long>();
             _importPersonsIds = new List<long>();
             _importSeasonsIds = new List<SeasonWithSeries>();
@@ -197,6 +199,10 @@ namespace ImportService.Worker.MovieDb
                         .Series
                         .Where(x => x.MovieDbId == seriesId)
                         .FirstOrDefaultAsync();
+
+                    var poster = await _movieDbApi.GetImage(seriesFromImport.PosterName);
+
+                    seriesFromImport.PosterContent = poster;
 
                     await _movieDbImportServiceDbHelper.AddOrUpdateSeries(seriesFromDb, seriesFromImport);
 

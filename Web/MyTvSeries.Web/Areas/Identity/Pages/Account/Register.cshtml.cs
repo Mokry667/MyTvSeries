@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using MyTvSeries.Identity.Entities;
+using MyTvSeries.Domain.Identity;
 
 namespace MyTvSeries.Web.Areas.Identity.Pages.Account
 {
@@ -69,7 +69,6 @@ namespace MyTvSeries.Web.Areas.Identity.Pages.Account
             {
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                // TODO Create user in MyTvSeries ???
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

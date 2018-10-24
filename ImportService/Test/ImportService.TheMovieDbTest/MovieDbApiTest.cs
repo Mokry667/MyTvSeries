@@ -65,6 +65,18 @@ namespace ImportService.TheMovieDbTest
         {
             var creditsJson = await _api.GetCredits(_seriesId);
             Assert.Contains(creditsJson.CastJson, x => x.Character == "John Locke");
-        } 
+        }
+
+        [Fact]
+        public async void GetImageShouldReturnPosterOfTheLost()
+        {
+            var seriesJson = await _api.GetSeriesDetails(_seriesId);
+
+            var imagePath = seriesJson.BackdropPath;
+
+            await _api.SetUpImageApi();
+
+            await _api.GetImage(imagePath);
+        }
     }
 }

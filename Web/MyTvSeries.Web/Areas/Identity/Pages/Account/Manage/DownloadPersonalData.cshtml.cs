@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using MyTvSeries.Identity.Entities;
+using MyTvSeries.Domain.Identity;
 using Newtonsoft.Json;
 
 namespace MyTvSeries.Web.Areas.Identity.Pages.Account.Manage

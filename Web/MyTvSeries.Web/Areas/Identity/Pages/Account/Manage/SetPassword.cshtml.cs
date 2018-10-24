@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using MyTvSeries.Identity.Entities;
+using MyTvSeries.Domain.Identity;
 
 namespace MyTvSeries.Web.Areas.Identity.Pages.Account.Manage
 {

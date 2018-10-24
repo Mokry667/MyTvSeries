@@ -13,5 +13,8 @@ namespace ImportService.TheMovieDb.Api
         Task<GenresListJson> GetGenres();
         Task<SeasonDetailsJson> GetSeason(long seriesId, long seasonNumber);
         Task<SeriesCreditsJson> GetCredits(long seriesId);
+        Task<ConfigurationJson> GetConfiguration();
+        Task SetUpImageApi();
+        Task<byte[]> GetImage(string imagePath);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using MyTvSeries.Domain.Enums;
+using MyTvSeries.Domain.Identity;
 using MyTvSeries.Domain.ManyToMany;
 
 namespace MyTvSeries.Domain.Entities
@@ -23,6 +24,7 @@ namespace MyTvSeries.Domain.Entities
 
         // TODO actually it is not known which episode is running for how long from MovieDb
         public virtual ICollection<EpisodeRuntime> EpisodeRuntimes { get; set; }
+        public virtual ICollection<UserSeries> SeriesUsers { get; set; }
 
         public string Name { get; set; }
         public string OriginalName { get; set; }
@@ -42,6 +44,11 @@ namespace MyTvSeries.Domain.Entities
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal UserRating { get; set; }
+
+        public int UserVotes { get; set; }
+
+        public string PosterName { get; set; }
+        public byte[] PosterContent { get; set; }
 
         public bool IsImportEnabled { get; set; }
 

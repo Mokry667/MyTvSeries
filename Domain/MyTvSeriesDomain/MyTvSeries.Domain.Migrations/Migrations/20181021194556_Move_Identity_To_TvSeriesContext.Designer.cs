@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyTvSeries.Domain.Ef;
 
 namespace MyTvSeries.Domain.Migrations.Migrations
 {
     [DbContext(typeof(TvSeriesContext))]
-    partial class TvSeriesContextModelSnapshot : ModelSnapshot
+    [Migration("20181021194556_Move_Identity_To_TvSeriesContext")]
+    partial class Move_Identity_To_TvSeriesContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -473,10 +475,6 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<string>("Overview");
 
-                    b.Property<byte[]>("PosterContent");
-
-                    b.Property<string>("PosterName");
-
                     b.Property<int>("Status");
 
                     b.Property<decimal>("TotalRuntime")
@@ -486,8 +484,6 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<decimal>("UserRating")
                         .HasColumnType("decimal(18, 2)");
-
-                    b.Property<int>("UserVotes");
 
                     b.HasKey("Id");
 

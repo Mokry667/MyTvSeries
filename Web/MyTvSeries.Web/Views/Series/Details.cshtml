@@ -1,139 +1,142 @@
-﻿@model MyTvSeries.Domain.Entities.Series
+﻿@using MyTvSeries.Domain.Enums
+@using MyTvSeries.Web.Models.Enums
+@model UserSeriesDetailViewModel
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<div class="container-fluid">
+    <div class="row">
+        <h2></h2>
+        @if (Model.PosterContent != null)
+        {
+            <div class="col-md-3">
+                <img src="data:image;base64,@System.Convert.ToBase64String(Model.PosterContent)" class="img-responsive pull-left" width="240" height="240" />
+            </div>
+        }
+        <div class="col-md-9">
+            <h1>@Model.Name</h1>
+            <p>
+                Original name:
+                @if (Model.OriginalName == null)
+                {
+                    @Model.Name
+                }
+                else
+                {
+                    @Model.OriginalName
+                }
+            </p>
+        </div>
+        <div class="col-md-2">
+            <h4>@Html.DisplayNameFor(model => model.SiteRating)</h4>
+            @Html.DisplayFor(model => model.SiteRating)
+        </div>
+        <div class="col-md-2">
+            <h4>@Html.DisplayNameFor(model => model.UserVotes)</h4>
+            @Html.DisplayFor(model => model.UserVotes)
+        </div>
+        <div class="col-md-9">
+            <h4>@Html.DisplayNameFor(model => model.Overview)</h4>
+            <p>@Html.DisplayFor(model => model.Overview)</p>
+        </div>
+        <form asp-action="Details">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label asp-for="EpisodesWatched" class="control-label"></label>
+                            <div class="input-group">
+                                <input asp-for="EpisodesWatched" class="form-control">
+                                <span class="input-group-addon">
+                                    / @Model.NumberOfEpisodes
+                                </span>
+                                <span asp-validation-for="EpisodesWatched" class="text-danger"></span>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label asp-for="SeasonsWatched" class="control-label"></label>
+                            <div class="input-group">
+                                <input asp-for="SeasonsWatched" class="form-control"/>
+                                <span class="input-group-addon">
+                                    / @Model.NumberOfSeasons
+                                </span>
+                                <span asp-validation-for="SeasonsWatched" class="text-danger"></span>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-md-8"></div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select asp-for="WatchStatus" asp-items="Html.GetEnumSelectList<WatchStatus>()" class="form-control"></select>
+                        <span asp-validation-for="WatchStatus" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select asp-for="SeriesRating" asp-items="Html.GetEnumSelectList<SeriesRating>()" class="form-control"></select>
+                        <span asp-validation-for="SeriesRating" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="btn btn-default pull-left"/>
+                    </div>
+                </div>
+            </div>
+            <input asp-for="Name" type="hidden"/>
+            <input asp-for="OriginalName" type="hidden"/>
+            <input asp-for="Overview" type="hidden"/>
+            <input asp-for="Status" type="hidden"/>
+            <input asp-for="AiredFrom" type="hidden"/>
+            <input asp-for="AiredTo" type="hidden"/>
+            <input asp-for="AirDayOfWeek" type="hidden"/>
+            <input asp-for="AirTime" type="hidden"/>
+            <input asp-for="NumberOfSeasons" type="hidden"/>
+            <input asp-for="NumberOfEpisodes" type="hidden"/>
+            <input asp-for="TotalRuntime" type="hidden"/>
+            <input asp-for="SiteRating" type="hidden"/>
+            <input asp-for="SeriesId" type="hidden"/>
+            <input asp-for="SiteRating" type="hidden"/>
+            <input asp-for="UserVotes" type="hidden"/>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-md-3 text-left">
+            <strong>@Html.DisplayNameFor(model => model.Status):</strong>
+            @Html.DisplayFor(model => model.Status)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 text-left">
+            <strong>Aired:</strong>
+            @Html.DisplayFor(model => model.AiredFrom) - @Html.DisplayFor(model => model.AiredTo)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 text-left">
+            <strong>Broadcast time:</strong>
+            @Html.DisplayFor(model => model.AirTime) on @Html.DisplayFor(model => model.AirDayOfWeek)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 text-left">
+            <strong>@Html.DisplayNameFor(model => model.NumberOfEpisodes):</strong>
+            @Html.DisplayFor(model => model.NumberOfEpisodes)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 text-left">
+            <strong>@Html.DisplayNameFor(model => model.NumberOfSeasons):</strong>
+            @Html.DisplayFor(model => model.NumberOfSeasons)
+        </div>
+    </div>
+</div>
 
 <div>
-    <h4>Series</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.TvDbId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.TvDbId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.MovieDbId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.MovieDbId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ImdbId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ImdbId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.OriginalName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.OriginalName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Overview)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Overview)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AiredFrom)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AiredFrom)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AiredTo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AiredTo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AirDayOfWeek)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AirDayOfWeek)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AirTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AirTime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.NumberOfSeasons)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.NumberOfSeasons)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.NumberOfEpisodes)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.NumberOfEpisodes)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalRuntime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.TotalRuntime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.UserRating)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserRating)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsImportEnabled)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsImportEnabled)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastChangedBy)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastChangedBy)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastChangedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastChangedAt)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+@*    <a asp-action="Edit" asp-route-id="@Model.SeriesId">Edit</a> |*@
     <a asp-action="Index">Back to List</a>
 </div>

@@ -1,11 +1,13 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyTvSeries.Domain.Entities;
+using MyTvSeries.Domain.Identity;
 using MyTvSeries.Domain.ManyToMany;
 
 namespace MyTvSeries.Domain.Ef
 {
-    public class TvSeriesContext : DbContext, ITvSeriesContext
+    public class TvSeriesContext : IdentityDbContext<ApplicationUser>, ITvSeriesContext
     {
         public TvSeriesContext(DbContextOptions<TvSeriesContext> options)
             : base(options)
@@ -25,6 +27,7 @@ namespace MyTvSeries.Domain.Ef
         public DbSet<Studio> Studios { get; set; }
         public DbSet<Crew> Crews { get; set; }
         public DbSet<EpisodeRuntime> EpisodesRuntimes { get; set; }
+        public DbSet<UserSeries> UsersSeries { get; set; }
 
         public async Task<int> SaveChangesAsync()
         {
@@ -34,6 +37,8 @@ namespace MyTvSeries.Domain.Ef
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Many to many entity framework core workaround
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<SeriesGenres>()
                 .HasKey(x => new { x.SeriesId, x.GenreId } );
 
@@ -117,6 +122,18 @@ namespace MyTvSeries.Domain.Ef
                 .WithMany(x => x.SeriesCharacters)
                 .HasForeignKey(x => x.CharacterId);
 
+            modelBuilder.Entity<UserSeries>()
+                .HasKey(x => new { x.SeriesId, x.UserId });
+
+            modelBuilder.Entity<UserSeries>()
+                .HasOne(x => x.Series)
+                .WithMany(x => x.SeriesUsers)
+                .HasForeignKey(x => x.SeriesId);
+
+            modelBuilder.Entity<UserSeries>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.SeriesUsers)
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

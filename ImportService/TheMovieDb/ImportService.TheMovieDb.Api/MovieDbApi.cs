@@ -19,6 +19,8 @@ namespace ImportService.TheMovieDb.Api
         private readonly string _apiSuffix;
         private readonly string _apiVersion;
 
+        private string _imageApiPrefix;
+
         #endregion
 
         #region Ctors
@@ -43,6 +45,45 @@ namespace ImportService.TheMovieDb.Api
             _httpClient = new HttpClient { BaseAddress = new Uri(apiPrefix) };
             _apiSuffix = "?api_key=" + apiKey + "&language=" + apiLanguage;*/
         }
+
+        #endregion
+
+        public async Task SetUpImageApi()
+        {
+            var imageConfiguration = await GetConfiguration();
+
+            _imageApiPrefix = imageConfiguration.Images.SecureBaseUrl;
+            _imageApiPrefix = _imageApiPrefix + "/original/";
+        }
+
+        #region Images
+
+        public async Task<ConfigurationJson> GetConfiguration()
+        {
+            var request = "/configuration";
+            request = AddApiVersion(request);
+            request = AddApiKey(request);
+
+            var response = await GetResponse(request);
+            ConfigurationJson configurationJson = null;
+            if (response != null)
+            {
+                configurationJson = JsonConvert.DeserializeObject<ConfigurationJson>(response.ToString());
+            }
+
+            return configurationJson;
+        }
+
+        public async Task<byte[]> GetImage(string imagePath)
+        {
+            var request = _imageApiPrefix + imagePath;
+
+            var response = await GetImageResponse(request);
+
+            return response;
+        }
+
+        #endregion
 
         #region Series
 
@@ -185,8 +226,6 @@ namespace ImportService.TheMovieDb.Api
 
         #endregion
 
-        #endregion
-
         #region Private methods
 
         private async Task<object> GetResponse(string request)
@@ -195,6 +234,16 @@ namespace ImportService.TheMovieDb.Api
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadAsStringAsync();
+            }
+            return null;
+        }
+
+        private async Task<byte[]> GetImageResponse(string request)
+        {
+            var response = await _httpClient.GetAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsByteArrayAsync();
             }
             return null;
         }

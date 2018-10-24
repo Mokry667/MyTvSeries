@@ -17,8 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain\IdentityDomain\MyTvSeries.Identity.Ef\MyTvSeries.Identity.Ef.csproj" />
-    <ProjectReference Include="..\..\Domain\IdentityDomain\MyTvSeries.Identity.Migrations\MyTvSeries.Identity.Migrations.csproj" />
     <ProjectReference Include="..\..\Domain\MyTvSeriesDomain\MyTvSeries.Domain.EF\MyTvSeries.Domain.Ef.csproj" />
     <ProjectReference Include="..\..\Domain\MyTvSeriesDomain\MyTvSeries.Domain.Migrations\MyTvSeries.Domain.Migrations.csproj" />
   </ItemGroup>

@@ -32,6 +32,10 @@ namespace ImportService.Worker.MovieDb
             seriesFromDb.NumberOfSeasons = seriesFromImport.NumberOfSeasons;
             seriesFromDb.NumberOfEpisodes = seriesFromImport.NumberOfEpisodes;
 
+            // TODO maybe only in initial import (?)
+            seriesFromDb.PosterName = seriesFromImport.PosterName;
+            seriesFromDb.PosterContent = seriesFromImport.PosterContent;
+
             return seriesFromDb;
         }
 

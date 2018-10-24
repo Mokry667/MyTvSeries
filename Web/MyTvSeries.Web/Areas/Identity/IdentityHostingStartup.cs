@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MyTvSeries.Identity.Ef;
-using MyTvSeries.Identity.Entities;
+using MyTvSeries.Domain.Ef;
+using MyTvSeries.Domain.Identity;
 
 [assembly: HostingStartup(typeof(MyTvSeries.Web.Areas.Identity.IdentityHostingStartup))]
 namespace MyTvSeries.Web.Areas.Identity

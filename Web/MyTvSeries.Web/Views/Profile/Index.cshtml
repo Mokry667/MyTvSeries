@@ -8,23 +8,145 @@
 
 <h2>@Model.UserName's profile</h2>
 
+<ul class="nav nav-tabs nav-justified">
+    <li role="presentation" class="active">
+        <a href="#">Overview</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Calendar</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Series list</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Favorites</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Reviews</a>
+    </li>
+</ul>
+
 <div class="container-fluid">
-    <div class="row">  
-        @foreach (var genre in Model.GenreSummary)
-        {
-            <div class="col-md-1">
-                @genre.Genre
-                @genre.Count
+    <div class="row">
+        <div class="col-md-6">
+            <div id="watchedChart" style="height: 400px;">
+
             </div>
-        }
+        </div>
+        <div class="col-md-6">
+            <div id="genreChart" style="height: 400px;">
+
+            </div>
+        </div>
     </div>
-    <div class="row">  
-        @foreach (var watchStatus in Model.WatchStatusSummary)
-        {
-            <div class="col-md-1">
-                @watchStatus.WatchStatus
-                @watchStatus.Count
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                Total entries
             </div>
-        }
+            <div class="row">
+                Episodes
+            </div>
+            <div class="row">
+                Mean score
+            </div>
+        </div>
     </div>
 </div>
+
+<script type="text/javascript">
+     
+    window.onload = function () {
+        var genreChart = new CanvasJS.Chart("genreChart", {
+            theme: "theme2",
+            animationEnabled: true,
+            title: {
+                text: "Genres overview"
+            },
+            data: [
+                {
+                    type: "pie", //change type to bar, line, area, pie, etc
+                    showInLegend: true,
+                    toolTipContent: "#percent %",
+                    legendText: "{indexLabel}",
+                    dataPoints: @Html.Raw(ViewBag.DataPointsPie)
+                }
+            ]
+        });
+        genreChart.render();
+
+        var watchedChart = new CanvasJS.Chart("watchedChart", {
+            theme: 'theme2',
+            title: {
+                text: "Series overview"
+            },
+            animationEnabled: true,
+            axisY: {
+                gridThickness: 0,
+                tickLength: 0,
+                lineThickness: 0,
+                labelFormatter: function(e) {
+                    return " ";
+                }
+            },
+            axisX: {
+                gridThickness: 0,
+                tickLength: 0,
+                lineThickness: 0,
+                labelFormatter: function(){
+                    return " ";
+                }
+            },
+            legend: {
+                horizontalAlign: 'center',
+                verticalAlign: 'bottom'
+            },
+            toolTip: {
+                content: "<span style='\"'color: {color};'\"'>{label}</span> : {y}"
+            },
+            data: [
+                {
+                    type: "stackedBar100",
+                    showInLegend: true,
+                    name: "Watching ",
+                    legendMarkerColor: "#64b3fc",
+                    dataPoints: [ @Html.Raw(ViewBag.WatchingSeries) ]
+                },
+
+                {
+                    type: "stackedBar100",
+                    showInLegend: true,
+                    name: "Completed",
+                    legendMarkerColor: "#72ffc6",
+                    dataPoints: [ @Html.Raw(ViewBag.CompletedSeries) ]
+                },
+
+                {
+                    type: "stackedBar100",
+                    showInLegend: true,
+                    name: "Dropped",
+                    legendMarkerColor: "#ff6b6b",
+                    dataPoints: [ @Html.Raw(ViewBag.DroppedSeries) ]
+                },
+
+                {
+                    type: "stackedBar100",
+                    showInLegend: true,
+                    name: "On hold",
+                    legendMarkerColor: "#ffb96a",
+                    dataPoints: [ @Html.Raw(ViewBag.OnHoldSeries) ]
+                },
+
+                {
+                    type: "stackedBar100",
+                    showInLegend: true,
+                    name: "Plan to watch",
+                    legendMarkerColor: "#dddddd",
+                    dataPoints: [ @Html.Raw(ViewBag.PlanToWatchSeries) ]
+                }
+            ]
+        });
+        watchedChart.render();
+    };
+</script>
+

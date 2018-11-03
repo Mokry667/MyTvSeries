@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MyTvSeries.Domain.Ef;
 using MyTvSeries.Domain.Enums;
 using MyTvSeries.Web.Models.Profile;
+using Newtonsoft.Json;
 
 namespace MyTvSeries.Web.Controllers
 {
@@ -88,7 +90,7 @@ namespace MyTvSeries.Web.Controllers
                         var newGenre = new GenreViewModel
                         {
                             Genre = genreName,
-                            Count = 0
+                            Count = 1
                         };
                         genreViewModels.Add(newGenre);
                     }
@@ -103,6 +105,45 @@ namespace MyTvSeries.Web.Controllers
 
             viewModel.WatchStatusSummary = watchStatusViewModels;
             viewModel.GenreSummary = genreViewModels;
+
+            // CREATE charts
+
+            List<DataPointPie> pieChartsDataPoints = new List<DataPointPie>();
+            foreach (var genre in viewModel.GenreSummary)
+            {
+                var dataPoint = new DataPointPie(genre.Count, genre.Genre);
+                pieChartsDataPoints.Add(dataPoint);
+            }
+
+            ViewBag.DataPointsPie = JsonConvert.SerializeObject(pieChartsDataPoints);
+
+            foreach (var seriesStatus in viewModel.WatchStatusSummary)
+            {
+                DataPointStackedBar dataPoint = null;
+                switch (seriesStatus.WatchStatus)
+                {
+                    case WatchStatus.Watching:
+                        dataPoint = new DataPointStackedBar(seriesStatus.Count, seriesStatus.WatchStatus.ToString(), "#64b3fc");
+                        ViewBag.WatchingSeries = JsonConvert.SerializeObject(dataPoint);
+                        break;
+                    case WatchStatus.Completed:
+                        dataPoint = new DataPointStackedBar(seriesStatus.Count, seriesStatus.WatchStatus.ToString(), "#72ffc6");
+                        ViewBag.CompletedSeries = JsonConvert.SerializeObject(dataPoint);
+                        break;
+                    case WatchStatus.Dropped:
+                        dataPoint = new DataPointStackedBar(seriesStatus.Count, seriesStatus.WatchStatus.ToString(), "#ff6b6b");
+                        ViewBag.DroppedSeries = JsonConvert.SerializeObject(dataPoint); ;
+                        break;
+                    case WatchStatus.OnHold:
+                        dataPoint = new DataPointStackedBar(seriesStatus.Count, seriesStatus.WatchStatus.ToString(), "#ffb96a");
+                        ViewBag.OnHoldSeries = JsonConvert.SerializeObject(dataPoint); ;
+                        break;
+                    case WatchStatus.PlanToWatch:
+                        dataPoint = new DataPointStackedBar(seriesStatus.Count, seriesStatus.WatchStatus.ToString(), "#dddddd");
+                        ViewBag.PlanToWatchSeries = JsonConvert.SerializeObject(dataPoint); ;
+                        break;
+                }
+            }
 
             return View(viewModel);
         }

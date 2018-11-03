@@ -1,0 +1,30 @@
+﻿@model MyTvSeries.Web.Models.Profile.UserProfileViewModel
+
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.UserName's profile</h2>
+
+<div class="container-fluid">
+    <div class="row">  
+        @foreach (var genre in Model.GenreSummary)
+        {
+            <div class="col-md-1">
+                @genre.Genre
+                @genre.Count
+            </div>
+        }
+    </div>
+    <div class="row">  
+        @foreach (var watchStatus in Model.WatchStatusSummary)
+        {
+            <div class="col-md-1">
+                @watchStatus.WatchStatus
+                @watchStatus.Count
+            </div>
+        }
+    </div>
+</div>

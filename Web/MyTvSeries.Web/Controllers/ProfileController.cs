@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyTvSeries.Domain.Ef;
+using MyTvSeries.Domain.Entities;
 using MyTvSeries.Domain.Enums;
 using MyTvSeries.Web.Models.Profile;
 using Newtonsoft.Json;
@@ -146,6 +147,82 @@ namespace MyTvSeries.Web.Controllers
             }
 
             return View(viewModel);
+        }
+
+        public async Task<IActionResult> Calendar(string username)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var viewModel = new CalendarViewModel { Username = username };
+
+            // take series that are still airing
+            var airingSeries = await _context.UsersSeries.Include(x => x.Series)
+                .Where(x => x.UserId == userId && x.Series.Status == SeriesStatus.Airing)
+                .ToListAsync();
+
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> SeriesList(string username)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var viewModel = new SeriesListViewModel { Username = username };
+
+            var userSeries = await _context.UsersSeries.Include(x => x.Series)
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+
+            viewModel.SeriesByWatchStatus = new List<SeriesOnListWithWatchStatusViewModel>();
+
+            var watchingSeries = userSeries.Where(x => x.WatchStatus == WatchStatus.Watching);
+            viewModel.SeriesByWatchStatus.Add(ToSeriesOnList(watchingSeries, "Watching"));
+
+            var completedSeries = userSeries.Where(x => x.WatchStatus == WatchStatus.Completed);
+            viewModel.SeriesByWatchStatus.Add(ToSeriesOnList(completedSeries, "Completed"));
+
+            var onHoldSeries = userSeries.Where(x => x.WatchStatus == WatchStatus.OnHold);
+            viewModel.SeriesByWatchStatus.Add(ToSeriesOnList(onHoldSeries, "On hold"));
+
+            var planToWatchSeries = userSeries.Where(x => x.WatchStatus == WatchStatus.PlanToWatch);
+            viewModel.SeriesByWatchStatus.Add(ToSeriesOnList(planToWatchSeries, "Plan to watch"));
+
+            var droppedSeries = userSeries.Where(x => x.WatchStatus == WatchStatus.Dropped);
+            viewModel.SeriesByWatchStatus.Add(ToSeriesOnList(droppedSeries, "Dropped"));
+
+            return View(viewModel);
+        }
+
+        private SeriesOnListWithWatchStatusViewModel ToSeriesOnList(IEnumerable<UserSeries> userSeries, string watchStatus)
+        {
+
+            var seriesOnListViewModels = new List<SeriesOnListViewModel>();
+
+            foreach (var series in userSeries)
+            {
+                var seriesOnList = new SeriesOnListViewModel
+                {
+                    Name = series.Series.Name,
+                    Id = series.SeriesId,
+                    NumberOfEpisodes = series.Series.NumberOfEpisodes,
+                    EpisodesWatched = series.EpisodesWatched,
+                    NumberOfSeasons = series.Series.NumberOfSeasons,
+                    SeasonsWatched = series.SeasonsWatched,
+                    PosterContent = series.Series.PosterContent,
+                    UserRating = series.Rating
+                };
+
+                seriesOnListViewModels.Add(seriesOnList);
+            }
+
+            var seriesWithWatchStatus = new SeriesOnListWithWatchStatusViewModel
+            {
+                WatchStatus = watchStatus,
+                Series = seriesOnListViewModels
+            };
+
+            return seriesWithWatchStatus;
         }
     }
 }

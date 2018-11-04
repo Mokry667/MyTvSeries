@@ -1,0 +1,100 @@
+﻿@model MyTvSeries.Web.Models.Profile.CalendarViewModel
+
+@{
+    ViewData["Title"] = "Calendar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Calendar</h2>
+
+<ul class="nav nav-tabs nav-justified">
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="Index" asp-route-username="@Model.Username">Overview</a>
+    </li>
+    <li role="presentation" class="active">
+        <a href="#">Calendar</a>
+    </li>
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="SeriesList" asp-route-username="@Model.Username">Series List</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Favorites</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Reviews</a>
+    </li>
+</ul>
+
+<div class="container-fluid">
+    <div class="row" style="height: 30px"></div>
+    <div class="row">
+        <div class="col-md-2">
+            01.11.2018 - 08.11.2018
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-angle-left"></i>
+            </button>
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-angle-right"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row" style="height: 30px"></div>
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-md-4"></div> <!-- this column empty -->
+            <div class="col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Monday</div>
+                    <div class="panel-body">Body</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                @*                <span class="label label-primary">
+                     Tuesday
+                </span>*@
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Tuesday</div>
+                    <div class="panel-body">Bootstrap Panel Body</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Wednesday</div>
+                    <div class="panel-body">Bootstrap Panel Body</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Thursday</div>
+                    <div class="panel-body">Bootstrap Panel Body</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Friday</div>
+                    <div class="panel-body">Bootstrap Panel Body</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="panel panel-success">
+                    <div class="panel-heading">Saturday</div>
+                    <div class="panel-body">Bootstrap Panel Body</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="panel panel-success">
+                    <div class="panel-heading">Sunday</div>
+                    <div class="panel-body">Bootstrap Panel Body</div>
+                </div>
+            </div>
+            <div class="col-md-2"></div> <!-- this column empty -->
+        </div>
+    </div>
+</div>

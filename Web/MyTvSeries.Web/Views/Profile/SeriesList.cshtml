@@ -1,0 +1,153 @@
+﻿@model MyTvSeries.Web.Models.Profile.SeriesListViewModel
+
+
+@{
+    ViewData["Title"] = "SeriesList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Series List</h2>
+
+<ul class="nav nav-tabs nav-justified">
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="Index" asp-route-username="@Model.Username">Overview</a>
+    </li>
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="Calendar" asp-route-username="@Model.Username">Calendar</a>
+    </li>
+    <li role="presentation" class="active">
+        <a href="#">Series List</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Favorites</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Reviews</a>
+    </li>
+</ul>
+
+<div class="container-fluid">
+    @*    <h2> Watching </h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Episode Progress
+                </th>
+                <th>
+                    Season Progress
+                </th>
+                <th>
+                    Rating
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.WatchingSeries)
+            {
+                <tr>
+                    <td>
+                        @if (item.PosterContent != null)
+                        {
+                            <div class="col-md-2">
+                                <img src="data:image;base64,@System.Convert.ToBase64String(item.PosterContent)" alt="~/images/no-image-available.png" class="pull-left" width="40" height="50"/>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-2">
+                                <img src="~/images/no-image-available.png" class="pull-left" width="40" height="50"/>
+                            </div>
+                        }
+                        <div class="col-md-6">
+                            <a asp-controller="Series" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+                        </div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EpisodesWatched) / @Html.DisplayFor(modelItem => item.NumberOfEpisodes)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SeasonsWatched) / @Html.DisplayFor(modelItem => item.NumberOfSeasons)
+                    </td>
+                    <td>
+                        @if (item.UserRating == 0)
+                        {
+                            @Html.Raw("Not rated");
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.UserRating);
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>*@
+
+    @foreach (var watchStatus in Model.SeriesByWatchStatus)
+    {
+        <h2> @watchStatus.WatchStatus </h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Episode Progress
+                    </th>
+                    <th>
+                        Season Progress
+                    </th>
+                    <th>
+                        Rating
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in watchStatus.Series)
+                {
+                    <tr>
+                        <td>
+                            @if (item.PosterContent != null)
+                            {
+                                <div class="col-md-2">
+                                    <img src="data:image;base64,@System.Convert.ToBase64String(item.PosterContent)" alt="~/images/no-image-available.png" class="pull-left" width="40" height="50" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-2">
+                                    <img src="~/images/no-image-available.png" class="pull-left" width="40" height="50" />
+                                </div>
+                            }
+                            <div class="col-md-6">
+                                <a asp-controller="Series" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+                            </div>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EpisodesWatched) / @Html.DisplayFor(modelItem => item.NumberOfEpisodes)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SeasonsWatched) / @Html.DisplayFor(modelItem => item.NumberOfSeasons)
+                        </td>
+                        <td>
+                            @if (item.UserRating == 0)
+                            {
+                                @Html.Raw("Not rated");
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.UserRating);
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+

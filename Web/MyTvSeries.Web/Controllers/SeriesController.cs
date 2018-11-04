@@ -131,6 +131,8 @@ namespace MyTvSeries.Web.Controllers
         // GET: Series/Details/5
         public async Task<IActionResult> Details(UserSeriesDetailViewModel viewModel)
         {
+            viewModel.Genres = new List<Genre>();
+
             Series series = null;
 
             if (ModelState.IsValid)
@@ -150,6 +152,8 @@ namespace MyTvSeries.Web.Controllers
                         Rating = (int) viewModel.SeriesRating,
                         WatchStatus = viewModel.WatchStatus,
                         CreatedAt = DateTime.UtcNow,
+                        EpisodesWatched = viewModel.EpisodesWatched,
+                        SeasonsWatched = viewModel.SeasonsWatched,
 
                         // TODO fix this
                         CreatedBy = 1
@@ -171,20 +175,38 @@ namespace MyTvSeries.Web.Controllers
                 {
                     userSeries.WatchStatus = viewModel.WatchStatus;
                     userSeries.Rating = (int) viewModel.SeriesRating;
+                    userSeries.EpisodesWatched = viewModel.EpisodesWatched;
+                    userSeries.SeasonsWatched = viewModel.SeasonsWatched;
 
-                    series = await _context.Series.FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
-                    var seriesRating = series.SeriesUsers.Sum(x => x.Rating);
-                    series.UserRating = (decimal) seriesRating / series.UserVotes;
+                    series = await _context.Series
+                        .Include(x => x.SeriesGenres)
+                        .ThenInclude(x => x.Genre)
+                        .FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
+
+                    if (userSeries.Rating != 0)
+                    {
+                        var seriesRating = series.SeriesUsers.Sum(x => x.Rating);
+                        series.UserRating = (decimal)seriesRating / series.UserVotes;
+                    }
 
                     _context.Update(series);
                     _context.Update(userSeries);
                 }
 
+                series = await _context.Series
+                    .Include(x => x.SeriesGenres)
+                    .ThenInclude(x => x.Genre)
+                    .FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
 
                 if (series != null)
                 {
                     viewModel.SiteRating = series.UserRating;
                     viewModel.PosterContent = series.PosterContent;
+
+                    foreach (var seriesGenre in series.SeriesGenres)
+                    {
+                        viewModel.Genres.Add(seriesGenre.Genre);
+                    }
                 }
 
                 await _context.SaveChangesAsync();
@@ -193,10 +215,18 @@ namespace MyTvSeries.Web.Controllers
             }
             else
             {
-                series = await _context.Series.FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
+                series = await _context.Series
+                    .Include(x => x.SeriesGenres)
+                    .ThenInclude(x => x.Genre)
+                    .FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
 
                 viewModel.SiteRating = series.UserRating;
                 viewModel.PosterContent = series.PosterContent;
+
+                foreach (var seriesGenre in series.SeriesGenres)
+                {
+                    viewModel.Genres.Add(seriesGenre.Genre);
+                }
 
                 return View(viewModel);
             }

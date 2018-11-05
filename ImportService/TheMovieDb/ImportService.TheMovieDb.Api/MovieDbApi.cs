@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ImportService.TheMovieDb.Api.Json.Entities;
@@ -53,7 +54,8 @@ namespace ImportService.TheMovieDb.Api
             var imageConfiguration = await GetConfiguration();
 
             _imageApiPrefix = imageConfiguration.Images.SecureBaseUrl;
-            _imageApiPrefix = _imageApiPrefix + "/original/";
+            // poster_size
+            _imageApiPrefix = _imageApiPrefix + "/w185/";
         }
 
         #region Images
@@ -122,6 +124,25 @@ namespace ImportService.TheMovieDb.Api
             }
 
             return seriesExternalIdsJson;
+        }
+
+        // tv/popular
+        public async Task<SeriesPopularJson> GetPopular(int page)
+        {
+            var request = "/tv/popular";
+            request = AddApiVersion(request);
+            request = AddApiKey(request);
+            request = request + "&page=" + page;
+
+            var response = await GetResponse(request);
+
+            SeriesPopularJson seriesPopularJson = null;
+            if (response != null)
+            {
+                seriesPopularJson = JsonConvert.DeserializeObject<SeriesPopularJson>(response.ToString());
+            }
+
+            return seriesPopularJson;
         }
 
         #endregion
@@ -234,6 +255,16 @@ namespace ImportService.TheMovieDb.Api
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadAsStringAsync();
+            }
+            // try again after some time
+            if (response.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                System.Threading.Thread.Sleep(5000);
+                response = await _httpClient.GetAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
             }
             return null;
         }

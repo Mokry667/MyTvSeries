@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MyTvSeries.Web.Models.Series;
 
 namespace MyTvSeries.Web.Models.Validators
 {

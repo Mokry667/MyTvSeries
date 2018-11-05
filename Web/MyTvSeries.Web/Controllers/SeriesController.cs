@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyTvSeries.Domain.Ef;
 using MyTvSeries.Domain.Entities;
-using MyTvSeries.Web.Models;
 using MyTvSeries.Web.Models.Enums;
+using MyTvSeries.Web.Models.Series;
 using X.PagedList;
 
 namespace MyTvSeries.Web.Controllers

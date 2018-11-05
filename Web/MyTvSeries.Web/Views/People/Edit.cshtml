@@ -1,0 +1,109 @@
+﻿@model MyTvSeries.Domain.Entities.Person
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>Person</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="TvDbId" class="control-label"></label>
+                <input asp-for="TvDbId" class="form-control" />
+                <span asp-validation-for="TvDbId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MovieDbId" class="control-label"></label>
+                <input asp-for="MovieDbId" class="form-control" />
+                <span asp-validation-for="MovieDbId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImdbId" class="control-label"></label>
+                <input asp-for="ImdbId" class="form-control" />
+                <span asp-validation-for="ImdbId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <select asp-for="Gender" class="form-control"></select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Biography" class="control-label"></label>
+                <input asp-for="Biography" class="form-control" />
+                <span asp-validation-for="Biography" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Birthday" class="control-label"></label>
+                <input asp-for="Birthday" class="form-control" />
+                <span asp-validation-for="Birthday" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Deathday" class="control-label"></label>
+                <input asp-for="Deathday" class="form-control" />
+                <span asp-validation-for="Deathday" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlaceOfBirth" class="control-label"></label>
+                <input asp-for="PlaceOfBirth" class="form-control" />
+                <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsImportEnabled" /> @Html.DisplayNameFor(model => model.IsImportEnabled)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="PosterName" class="control-label"></label>
+                <input asp-for="PosterName" class="form-control" />
+                <span asp-validation-for="PosterName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PosterContent" class="control-label"></label>
+                <input asp-for="PosterContent" class="form-control" />
+                <span asp-validation-for="PosterContent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedBy" class="control-label"></label>
+                <input asp-for="CreatedBy" class="form-control" />
+                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedAt" class="control-label"></label>
+                <input asp-for="CreatedAt" class="form-control" />
+                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastChangedBy" class="control-label"></label>
+                <input asp-for="LastChangedBy" class="form-control" />
+                <span asp-validation-for="LastChangedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastChangedAt" class="control-label"></label>
+                <input asp-for="LastChangedAt" class="form-control" />
+                <span asp-validation-for="LastChangedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

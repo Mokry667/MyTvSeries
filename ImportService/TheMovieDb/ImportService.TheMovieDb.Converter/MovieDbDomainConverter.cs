@@ -83,6 +83,7 @@ namespace ImportService.TheMovieDb.Converter
                 Birthday = birthdayValue,
                 Deathday = deathdayValue,
                 PlaceOfBirth = personJson.PlaceOfBirth,
+                PosterName = personJson.ProfilePath
             };
 
             return person;
@@ -178,8 +179,18 @@ namespace ImportService.TheMovieDb.Converter
             switch (status)
             {
                 // TODO handle all cases
+                case "Returning Series":
+                    return SeriesStatus.Airing;
+                case "Pilot":
+                    return SeriesStatus.Airing;
                 case "Ended":
                     return SeriesStatus.Finished;
+                case "Canceled":
+                    return SeriesStatus.Canceled;
+                case "Planned":
+                    return SeriesStatus.NotYetAired;
+                case "In Production":
+                    return SeriesStatus.NotYetAired;
                 default:
                     return SeriesStatus.Unknown;
             }

@@ -28,6 +28,9 @@ namespace MyTvSeries.Domain.Entities
 
         public bool IsImportEnabled { get; set; }
 
+        public string PosterName { get; set; }
+        public byte[] PosterContent { get; set; }
+
         public long CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public long? LastChangedBy { get; set; }

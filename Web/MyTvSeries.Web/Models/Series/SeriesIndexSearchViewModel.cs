@@ -1,6 +1,6 @@
 ﻿using X.PagedList;
 
-namespace MyTvSeries.Web.Models
+namespace MyTvSeries.Web.Models.Series
 {
     public class SeriesIndexSearchViewModel
     {

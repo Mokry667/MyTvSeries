@@ -16,5 +16,6 @@ namespace ImportService.TheMovieDb.Api
         Task<ConfigurationJson> GetConfiguration();
         Task SetUpImageApi();
         Task<byte[]> GetImage(string imagePath);
+        Task<SeriesPopularJson> GetPopular(int page);
     }
 }

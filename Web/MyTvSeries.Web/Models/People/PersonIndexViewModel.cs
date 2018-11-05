@@ -1,16 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyTvSeries.Web.Models.Series
+namespace MyTvSeries.Web.Models.People
 {
-    public class SeriesIndexViewModel
+    public class PersonIndexViewModel
     {
         public long Id { get; set; }
 
-        [Display(Name = "Title")]
+        [Display(Name = "Name")]
         public string Name { get; set; }
-
-        [Display (Name = "Site Rating")]
-        public decimal UserRating { get; set; }
 
         public byte[] PosterContent { get; set; }
 

@@ -25,6 +25,7 @@ namespace ImportService.Worker.MovieDb
         private readonly IConfiguration _configuration;
 
         private readonly IdSource _idSource;
+        private readonly int _popularPages;
 
         private bool _isInitialized;
 
@@ -49,6 +50,7 @@ namespace ImportService.Worker.MovieDb
             _logger = logger;
             _configuration = configuration;
             _idSource = (IdSource)Enum.Parse(typeof(IdSource), _configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("IdSource").Value, true);
+            _popularPages = 5;
             _isInitialized = false;
         }
 
@@ -71,6 +73,9 @@ namespace ImportService.Worker.MovieDb
                     break;
                 case IdSource.Config:
                     InitializeFromConfig();
+                    break;
+                case IdSource.Popular:
+                    await InitializePopular();
                     break;
             }
 
@@ -107,6 +112,39 @@ namespace ImportService.Worker.MovieDb
         #endregion
 
         #region Private methods
+
+        private async Task InitializePopular()
+        {
+            for (int i = 1; i <= _popularPages; i++)
+            {
+                var popularJson = await _movieDbApi.GetPopular(i);
+                foreach (var result in popularJson.Results)
+                {
+                    _importSeriesIds.Add(result.Id);
+                }
+            }
+            foreach (var seriesId in _importSeriesIds)
+            {
+                var creditsJson = await _movieDbApi.GetCredits(seriesId);
+                if (creditsJson != null)
+                {
+                    foreach (var cast in creditsJson.CastJson)
+                    {
+                        if (cast.Id != null && !_importPersonsIds.Contains(cast.Id.Value))
+                        {
+                            _importPersonsIds.Add(cast.Id.Value);
+                        }
+                    }
+                    foreach (var crew in creditsJson.CrewJson)
+                    {
+                        if (crew.Id != null && !_importPersonsIds.Contains(crew.Id.Value))
+                        {
+                            _importPersonsIds.Add(crew.Id.Value);
+                        }
+                    }
+                }
+            }
+        }
 
         private async Task InitializeFromDb()
         {
@@ -238,13 +276,17 @@ namespace ImportService.Worker.MovieDb
         {
             for (var index = 0; index < _importPersonsIds.Count - 1; index++)
             {
-                var personId = _importSeriesIds.ElementAt(index);
+                var personId = _importPersonsIds.ElementAt(index);
 
                 var personJson = await _movieDbApi.GetPersonDetails(personId);
 
                 if (personJson != null)
                 {
                     var personFromImport = _movieDbDomainConverter.ConvertToPerson(personJson);
+
+                    var poster = await _movieDbApi.GetImage(personFromImport.PosterName);
+
+                    personFromImport.PosterContent = poster;
 
                     var personFromDb = await _tvSeriesContext
                         .Persons

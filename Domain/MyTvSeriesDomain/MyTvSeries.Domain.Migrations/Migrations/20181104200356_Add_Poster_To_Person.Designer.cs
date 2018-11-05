@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyTvSeries.Domain.Ef;
 
 namespace MyTvSeries.Domain.Migrations.Migrations
 {
     [DbContext(typeof(TvSeriesContext))]
-    partial class TvSeriesContextModelSnapshot : ModelSnapshot
+    [Migration("20181104200356_Add_Poster_To_Person")]
+    partial class Add_Poster_To_Person
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

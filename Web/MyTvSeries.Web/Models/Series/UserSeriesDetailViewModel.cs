@@ -6,7 +6,7 @@ using MyTvSeries.Domain.Enums;
 using MyTvSeries.Web.Models.Enums;
 using MyTvSeries.Web.Models.Validators;
 
-namespace MyTvSeries.Web.Models
+namespace MyTvSeries.Web.Models.Series
 {
     public class UserSeriesDetailViewModel
     {

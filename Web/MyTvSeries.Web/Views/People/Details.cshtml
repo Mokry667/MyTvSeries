@@ -1,0 +1,115 @@
+﻿@model MyTvSeries.Domain.Entities.Person
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Person</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TvDbId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TvDbId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MovieDbId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MovieDbId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ImdbId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ImdbId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Biography)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Biography)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Birthday)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Birthday)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Deathday)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Deathday)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PlaceOfBirth)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PlaceOfBirth)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsImportEnabled)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsImportEnabled)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PosterName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PosterName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PosterContent)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PosterContent)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastChangedBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastChangedBy)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastChangedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastChangedAt)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

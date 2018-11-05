@@ -120,6 +120,8 @@ namespace ImportService.TheTvDb.Converter
                 // TODO handle all cases
                 case "Continuing":
                     return SeriesStatus.Airing;
+                case "Returning Series":
+                    return SeriesStatus.Airing;
                 case "Ended":
                     return SeriesStatus.Finished;
                 default:

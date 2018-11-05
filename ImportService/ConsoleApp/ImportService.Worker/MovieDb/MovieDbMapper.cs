@@ -48,6 +48,10 @@ namespace ImportService.Worker.MovieDb
             personFromDb.Deathday = personFromImport.Deathday;
             personFromDb.PlaceOfBirth = personFromImport.PlaceOfBirth;
 
+            // TODO maybe only in initial import (?)
+            personFromDb.PosterName = personFromImport.PosterName;
+            personFromDb.PosterContent = personFromImport.PosterContent;
+
             return personFromDb;
         }
 

@@ -41,6 +41,9 @@ namespace MyTvSeries.Web.Models.Series
         [Display(Name = "Episodes")]
         public int NumberOfEpisodes { get; set; }
 
+        [Display(Name = "Episode Runtime")]
+        public int EpisodeRuntime { get; set; }
+
         [Display(Name = "Genres")]
         public List<Genre> Genres { get; set; }
 

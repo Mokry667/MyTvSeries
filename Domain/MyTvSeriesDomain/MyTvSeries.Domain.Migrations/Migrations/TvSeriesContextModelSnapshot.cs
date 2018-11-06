@@ -137,13 +137,13 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<bool>("IsImportEnabled");
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<string>("Name");
 
@@ -164,11 +164,11 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<string>("Name");
 
@@ -187,7 +187,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<string>("Department");
 
@@ -197,7 +197,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<long>("PersonId");
 
@@ -224,13 +224,13 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<bool>("IsImportEnabled");
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<long?>("MovieDbId");
 
@@ -253,7 +253,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
                     b.ToTable("Episodes");
                 });
 
-            modelBuilder.Entity("MyTvSeries.Domain.Entities.EpisodeRuntime", b =>
+            modelBuilder.Entity("MyTvSeries.Domain.Entities.FavoritesPerson", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -261,21 +261,50 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
-                    b.Property<long>("RuntimeInMinutes");
+                    b.Property<long?>("PersonId");
 
-                    b.Property<long>("SeriesId");
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FavoritesPersons");
+                });
+
+            modelBuilder.Entity("MyTvSeries.Domain.Entities.FavoritesSeries", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime?>("LastChangedAt");
+
+                    b.Property<string>("LastChangedBy");
+
+                    b.Property<long?>("SeriesId");
+
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SeriesId");
 
-                    b.ToTable("EpisodesRuntimes");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FavoritesSeries");
                 });
 
             modelBuilder.Entity("MyTvSeries.Domain.Entities.Genre", b =>
@@ -286,13 +315,13 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<string>("Description");
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<long?>("MovieDbId");
 
@@ -311,7 +340,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<string>("Description");
 
@@ -319,7 +348,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<string>("Name");
 
@@ -338,13 +367,13 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<bool>("IsImportEnabled");
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<string>("Name");
 
@@ -369,7 +398,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<DateTime?>("Deathday");
 
@@ -381,7 +410,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<long?>("MovieDbId");
 
@@ -412,13 +441,13 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<bool>("IsImportEnabled");
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<long?>("MovieDbId");
 
@@ -455,7 +484,9 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<int>("EpisodeRuntime");
 
                     b.Property<string>("ImdbId");
 
@@ -463,7 +494,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<long?>("MovieDbId");
 
@@ -508,7 +539,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<string>("Description");
 
@@ -516,7 +547,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<string>("Name");
 
@@ -531,29 +562,33 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
             modelBuilder.Entity("MyTvSeries.Domain.Entities.UserSeries", b =>
                 {
-                    b.Property<long>("SeriesId");
-
-                    b.Property<string>("UserId");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<long>("CreatedBy");
+                    b.Property<string>("CreatedBy");
 
                     b.Property<int>("EpisodesWatched");
 
-                    b.Property<long>("Id");
-
                     b.Property<DateTime?>("LastChangedAt");
 
-                    b.Property<long?>("LastChangedBy");
+                    b.Property<string>("LastChangedBy");
 
                     b.Property<int>("Rating");
 
                     b.Property<int>("SeasonsWatched");
 
+                    b.Property<long>("SeriesId");
+
+                    b.Property<string>("UserId");
+
                     b.Property<int>("WatchStatus");
 
-                    b.HasKey("SeriesId", "UserId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("SeriesId");
 
                     b.HasIndex("UserId");
 
@@ -763,12 +798,26 @@ namespace MyTvSeries.Domain.Migrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("MyTvSeries.Domain.Entities.EpisodeRuntime", b =>
+            modelBuilder.Entity("MyTvSeries.Domain.Entities.FavoritesPerson", b =>
+                {
+                    b.HasOne("MyTvSeries.Domain.Entities.Person", "Person")
+                        .WithMany("FavoritesPersons")
+                        .HasForeignKey("PersonId");
+
+                    b.HasOne("MyTvSeries.Domain.Identity.ApplicationUser", "User")
+                        .WithMany("FavoritesPersons")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("MyTvSeries.Domain.Entities.FavoritesSeries", b =>
                 {
                     b.HasOne("MyTvSeries.Domain.Entities.Series", "Series")
-                        .WithMany("EpisodeRuntimes")
-                        .HasForeignKey("SeriesId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("FavoritesSeries")
+                        .HasForeignKey("SeriesId");
+
+                    b.HasOne("MyTvSeries.Domain.Identity.ApplicationUser", "User")
+                        .WithMany("FavoritesSeries")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("MyTvSeries.Domain.Entities.Network", b =>
@@ -802,8 +851,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.HasOne("MyTvSeries.Domain.Identity.ApplicationUser", "User")
                         .WithMany("SeriesUsers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("MyTvSeries.Domain.ManyToMany.SeriesCharacters", b =>

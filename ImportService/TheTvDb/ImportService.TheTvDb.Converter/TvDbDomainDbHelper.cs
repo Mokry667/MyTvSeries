@@ -48,7 +48,7 @@ namespace ImportService.TheTvDb.Converter
             {
                 Name = name,
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = 1
+                //CreatedBy = 1
             };
 
             await _context.Genres.AddAsync(genre);

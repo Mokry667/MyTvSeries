@@ -26,8 +26,9 @@ namespace MyTvSeries.Domain.Ef
         public DbSet<Network> Networks { get; set; }
         public DbSet<Studio> Studios { get; set; }
         public DbSet<Crew> Crews { get; set; }
-        public DbSet<EpisodeRuntime> EpisodesRuntimes { get; set; }
         public DbSet<UserSeries> UsersSeries { get; set; }
+        public DbSet<FavoritesPerson> FavoritesPersons { get; set; }
+        public DbSet<FavoritesSeries> FavoritesSeries { get; set; }
 
         public async Task<int> SaveChangesAsync()
         {
@@ -123,9 +124,6 @@ namespace MyTvSeries.Domain.Ef
                 .HasForeignKey(x => x.CharacterId);
 
             modelBuilder.Entity<UserSeries>()
-                .HasKey(x => new { x.SeriesId, x.UserId });
-
-            modelBuilder.Entity<UserSeries>()
                 .HasOne(x => x.Series)
                 .WithMany(x => x.SeriesUsers)
                 .HasForeignKey(x => x.SeriesId);
@@ -133,6 +131,26 @@ namespace MyTvSeries.Domain.Ef
             modelBuilder.Entity<UserSeries>()
                 .HasOne(x => x.User)
                 .WithMany(x => x.SeriesUsers)
+                .HasForeignKey(x => x.UserId);
+
+            modelBuilder.Entity<FavoritesSeries>()
+                .HasOne(x => x.Series)
+                .WithMany(x => x.FavoritesSeries)
+                .HasForeignKey(x => x.SeriesId);
+
+            modelBuilder.Entity<FavoritesSeries>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.FavoritesSeries)
+                .HasForeignKey(x => x.UserId);
+
+            modelBuilder.Entity<FavoritesPerson>()
+                .HasOne(x => x.Person)
+                .WithMany(x => x.FavoritesPersons)
+                .HasForeignKey(x => x.PersonId);
+
+            modelBuilder.Entity<FavoritesPerson>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.FavoritesPersons)
                 .HasForeignKey(x => x.UserId);
         }
     }

@@ -17,7 +17,8 @@ namespace MyTvSeries.Domain.Ef
         DbSet<Network> Networks { get; set; }
         DbSet<Studio> Studios { get; set; }
         DbSet<Crew> Crews { get; set; }
-        DbSet<EpisodeRuntime> EpisodesRuntimes { get; set; }
+        DbSet<FavoritesPerson> FavoritesPersons { get; set; }
+        DbSet<FavoritesSeries> FavoritesSeries { get; set; }
         Task<int> SaveChangesAsync();
     }
 }

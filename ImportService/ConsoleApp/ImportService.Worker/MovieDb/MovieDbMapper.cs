@@ -25,6 +25,7 @@ namespace ImportService.Worker.MovieDb
         public Series MapSeriesFromImportToSeriesFromDb(Series seriesFromDb, Series seriesFromImport)
         {
             seriesFromDb.Name = seriesFromImport.Name;
+            seriesFromDb.OriginalName = seriesFromImport.OriginalName;
             seriesFromDb.Overview = seriesFromImport.Overview;
             seriesFromDb.Status = seriesFromImport.Status;
             seriesFromDb.AiredFrom = seriesFromImport.AiredFrom;
@@ -92,6 +93,24 @@ namespace ImportService.Worker.MovieDb
             crewFromDb.Job = crewFromImport.Job;
 
             return crewFromDb;
+        }
+
+        public Series MapSeriesExternalIdsFromImportToSeriesFromDb(Series seriesFromDb, Series seriesFromImport)
+        {
+            seriesFromDb.TvDbId = seriesFromImport.TvDbId;
+            seriesFromDb.ImdbId = seriesFromImport.ImdbId;
+
+            return seriesFromDb;
+        }
+
+        public Series MapSeriesBroadcastAndRuntimeFromImportToSeriesFromDb(Series seriesFromDb, Series seriesFromImport)
+        {
+            seriesFromDb.AirTime = seriesFromImport.AirTime;
+            seriesFromDb.AirDayOfWeek = seriesFromImport.AirDayOfWeek;
+
+            seriesFromDb.EpisodeRuntime = seriesFromImport.EpisodeRuntime;
+
+            return seriesFromDb;
         }
 
         #endregion

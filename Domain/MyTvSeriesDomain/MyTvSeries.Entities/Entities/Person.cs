@@ -13,6 +13,7 @@ namespace MyTvSeries.Domain.Entities
 
         public virtual ICollection<Character> Characters { get; set; }
         public virtual ICollection<Crew> Crews { get; set; }
+        public virtual ICollection<FavoritesPerson> FavoritesPersons { get; set; }
 
         public string Name { get; set; } 
         public Gender Gender { get; set; }
@@ -21,19 +22,14 @@ namespace MyTvSeries.Domain.Entities
         public DateTime? Deathday { get; set; }
         public string PlaceOfBirth { get; set; }
 
-        // TODO think if should use this
-/*        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }*/
-
         public bool IsImportEnabled { get; set; }
 
         public string PosterName { get; set; }
         public byte[] PosterContent { get; set; }
 
-        public long CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
-        public long? LastChangedBy { get; set; }
+        public string LastChangedBy { get; set; }
         public DateTime? LastChangedAt { get; set; }
     }
 }

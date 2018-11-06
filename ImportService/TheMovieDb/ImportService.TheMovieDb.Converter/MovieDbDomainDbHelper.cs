@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ImportService.TheMovieDb.Api.Json.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MyTvSeries.Domain.Ef;
 using MyTvSeries.Domain.Entities;
@@ -16,14 +17,16 @@ namespace ImportService.TheMovieDb.Converter
         private readonly ITvSeriesContext _context;
         private readonly ILogger<IMovieDbDomainDbHelper> _logger;
 
+        private readonly string _systemGuid;
         #endregion
 
         #region Ctors
 
-        public MovieDbDomainDbHelper(ITvSeriesContext context, ILogger<IMovieDbDomainDbHelper> logger)
+        public MovieDbDomainDbHelper(ITvSeriesContext context, ILogger<IMovieDbDomainDbHelper> logger, IConfiguration configuration)
         {
             _context = context;
             _logger = logger;
+            _systemGuid = configuration.GetSection("System").GetSection("SystemGuid").Value;
         }
 
         #endregion
@@ -52,7 +55,7 @@ namespace ImportService.TheMovieDb.Converter
                 MovieDbId = genreJson.Id,
                 Name = genreJson.Name,
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = 1
+                CreatedBy = _systemGuid
             };
 
             await _context.Genres.AddAsync(genre);

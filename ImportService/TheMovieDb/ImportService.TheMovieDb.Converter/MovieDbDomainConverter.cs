@@ -43,6 +43,7 @@ namespace ImportService.TheMovieDb.Converter
             {
                 MovieDbId = seriesJson.Id,
                 Name = seriesJson.Name,
+                OriginalName = seriesJson.OriginalName,
                 Overview = seriesJson.Overview,
                 Status = ConvertToStatus(seriesJson.Status),
                 // TODO check if this date conversion is correct
@@ -57,7 +58,7 @@ namespace ImportService.TheMovieDb.Converter
 
             await ConvertToGenres(series, seriesJson.GenresJson);
 
-            ConvertToRuntimes(series, seriesJson.EpisodeRunTime);
+/*            ConvertToRuntimes(series, seriesJson.EpisodeRunTime);*/
 
             return series;
         }
@@ -170,6 +171,17 @@ namespace ImportService.TheMovieDb.Converter
             return crew;
         }
 
+        public Series ConvertToSeriesWithExternalIds(SeriesExternalIdsJson seriesJson)
+        {
+            var series = new Series
+            {
+                TvDbId = seriesJson.TvdbId,
+                ImdbId = seriesJson.ImdbId
+            };
+
+            return series;
+        }
+
         #endregion
 
         #region Private methods
@@ -255,7 +267,7 @@ namespace ImportService.TheMovieDb.Converter
             return character;
         }
 
-        private void ConvertToRuntimes(Series series, long[] episodeRuntimes)
+/*        private void ConvertToRuntimes(Series series, long[] episodeRuntimes)
         {
             series.EpisodeRuntimes = new List<EpisodeRuntime>();
             foreach (var runtime in episodeRuntimes)
@@ -275,7 +287,7 @@ namespace ImportService.TheMovieDb.Converter
 
                 series.EpisodeRuntimes.Add(episodeRuntime);
             }
-        }
+        }*/
 
         #endregion
 

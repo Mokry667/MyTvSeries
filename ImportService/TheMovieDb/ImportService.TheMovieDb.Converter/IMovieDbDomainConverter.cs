@@ -13,5 +13,6 @@ namespace ImportService.TheMovieDb.Converter
         List<Episode> ConvertToEpisode(SeasonDetailsJson seasonDetailsJson, long seasonId);
         Character ConvertToCharacter(CastJson characterJson, long seriesId, long personId);
         Crew ConvertToCrew(CrewJson crewJson, long seriesId, long personId);
+        Series ConvertToSeriesWithExternalIds(SeriesExternalIdsJson seriesJson);
     }
 }

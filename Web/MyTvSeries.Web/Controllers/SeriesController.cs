@@ -98,6 +98,7 @@ namespace MyTvSeries.Web.Controllers
                 AirTime = series.AirTime,
                 NumberOfSeasons = series.NumberOfSeasons,
                 NumberOfEpisodes = series.NumberOfEpisodes,
+                EpisodeRuntime = series.EpisodeRuntime,
                 TotalRuntime = series.TotalRuntime,
                 PosterContent = series.PosterContent,
                 Genres = new List<Genre>()
@@ -151,12 +152,10 @@ namespace MyTvSeries.Web.Controllers
                         UserId = userId,
                         Rating = (int) viewModel.SeriesRating,
                         WatchStatus = viewModel.WatchStatus,
+                        CreatedBy = userId,
                         CreatedAt = DateTime.UtcNow,
                         EpisodesWatched = viewModel.EpisodesWatched,
                         SeasonsWatched = viewModel.SeasonsWatched,
-
-                        // TODO fix this
-                        CreatedBy = 1
                     };
 
                     _context.Add(userSeries);

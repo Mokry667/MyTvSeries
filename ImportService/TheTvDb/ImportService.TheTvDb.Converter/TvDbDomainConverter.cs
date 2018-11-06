@@ -76,6 +76,40 @@ namespace ImportService.TheTvDb.Converter
             return series;
         }
 
+        public Series ConvertToSeriesRuntimeAndBrodcast(SeriesJson seriesJson)
+        {
+            // convert air time - 2 possible formats
+            bool isParsed = DateTime.TryParseExact(seriesJson.AirsTime, "hh:mm tt",
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime convertedAirTimeDateTime);
+
+            TimeSpan convertedAirTime = TimeSpan.Zero;
+
+            if (isParsed)
+                convertedAirTime = convertedAirTimeDateTime.TimeOfDay;
+            else
+            {
+                isParsed = DateTime.TryParseExact(seriesJson.AirsTime, "h:mm tt",
+                    CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime convertedAirTimeDateTime2);
+                if (isParsed)
+                    convertedAirTime = convertedAirTimeDateTime2.TimeOfDay;
+            }
+
+            bool isDayOfWeekParsed = Enum.TryParse(seriesJson.AirsDayOfWeek, out DayOfWeek convertedDayOfWeek);
+
+            bool isRuntimeParsed = Int32.TryParse(seriesJson.Runtime, out int convertedRuntime);
+
+            var series = new Series {AirTime = convertedAirTime};
+
+
+            if (isDayOfWeekParsed)
+                series.AirDayOfWeek = convertedDayOfWeek;
+
+            if (isRuntimeParsed)
+                series.EpisodeRuntime = convertedRuntime;
+
+            return series;
+        }
+
         public Person ConvertToPerson(SeriesActorJson seriesActorJson)
         {
             bool isTvDbIdParsed = Int64.TryParse(seriesActorJson.Id, out long convertedTvDbId);

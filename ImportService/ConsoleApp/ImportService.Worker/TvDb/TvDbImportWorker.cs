@@ -153,14 +153,14 @@ namespace ImportService.Worker.TvDb
 
                         seriesFromDb.LastChangedAt = DateTime.UtcNow;
                         // TODO system user id
-                        seriesFromDb.LastChangedBy = 1;
+                        //seriesFromDb.LastChangedBy = 1;
                         _tvSeriesContext.Series.Update(seriesFromDb);
                         _logger.LogInformation("Updated series with id [{0}]", seriesId);
                     }
                     else
                     {
                         series.CreatedAt = DateTime.UtcNow;
-                        series.CreatedBy = 1;
+                        //series.CreatedBy = 1;
                         await _tvSeriesContext.Series.AddAsync(series);
                         _logger.LogInformation("Added series with id [{0}]", seriesId);
                     }
@@ -230,14 +230,14 @@ namespace ImportService.Worker.TvDb
                         MapActorFromImportToPersonFromDb(ref personFromDb, person);
                         personFromDb.LastChangedAt = DateTime.UtcNow;
                         // TODO system user id
-                        personFromDb.LastChangedBy = 1;
+                        //personFromDb.LastChangedBy = 1;
                         _tvSeriesContext.Persons.Update(personFromDb);
                         _logger.LogInformation("Updated person with id [{0}]", personId);
                     }
                     else
                     {
                         person.CreatedAt = DateTime.UtcNow;
-                        person.CreatedBy = 1;
+                        //person.CreatedBy = 1;
                         await _tvSeriesContext.Persons.AddAsync(person);
                         _logger.LogInformation("Added person with id [{0}]", personId);
                     }
@@ -253,6 +253,7 @@ namespace ImportService.Worker.TvDb
         private void MapSeriesFromImportToSeriesFromDb(ref Series seriesFromDb, Series seriesFromImport)
         {
             seriesFromDb.Name = seriesFromImport.Name;
+            seriesFromDb.OriginalName = seriesFromImport.OriginalName;
             seriesFromDb.Status = seriesFromImport.Status;
             seriesFromDb.AiredFrom = seriesFromImport.AiredFrom;
             seriesFromDb.AiredTo = seriesFromImport.AiredTo;

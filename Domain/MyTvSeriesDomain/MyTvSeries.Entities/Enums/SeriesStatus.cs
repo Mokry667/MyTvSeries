@@ -6,6 +6,6 @@
         NotYetAired = 1,
         Airing = 2,
         Finished = 3,
-        Aborted = 4
+        Canceled = 4
     }
 }

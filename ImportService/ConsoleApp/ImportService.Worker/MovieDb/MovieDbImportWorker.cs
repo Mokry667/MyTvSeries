@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using ImportService.TheMovieDb.Api;
 using ImportService.TheMovieDb.Converter;
+using ImportService.TheTvDb.Api;
+using ImportService.TheTvDb.Api.Json.Entities;
+using ImportService.TheTvDb.Converter;
 using ImportService.Worker.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,12 +20,16 @@ namespace ImportService.Worker.MovieDb
     {
         #region Properties
 
-        private readonly IMovieDbApi _movieDbApi;
-        private readonly IMovieDbDomainConverter _movieDbDomainConverter;
         private readonly ITvSeriesContext _tvSeriesContext;
-        private readonly IMovieDbImportServiceDbHelper _movieDbImportServiceDbHelper;
         private readonly ILogger<IMovieDbImportWorker> _logger;
         private readonly IConfiguration _configuration;
+
+        private readonly IMovieDbApi _movieDbApi;
+        private readonly IMovieDbDomainConverter _movieDbDomainConverter;
+        private readonly IMovieDbImportServiceDbHelper _movieDbImportServiceDbHelper;
+
+        private readonly ITvDbApi _tvDbApi;
+        private readonly ITvDbDomainConverter _tvDbDomainConverter;
 
         private readonly IdSource _idSource;
         private readonly int _popularPages;
@@ -40,17 +47,20 @@ namespace ImportService.Worker.MovieDb
 
         #region Ctors
 
-        public MovieDbImportWorker(IMovieDbApi movieDbApi, IMovieDbDomainConverter movieDbDomainConverter, ITvSeriesContext tvSeriesContext,
+        public MovieDbImportWorker(IMovieDbApi movieDbApi, IMovieDbDomainConverter movieDbDomainConverter, 
+            ITvDbApi tvDbApi, ITvDbDomainConverter tvDbDomainConverter, ITvSeriesContext tvSeriesContext,
             IMovieDbImportServiceDbHelper movieDbImportServiceDbHelper, ILogger<IMovieDbImportWorker> logger, IConfiguration configuration)
         {
             _movieDbApi = movieDbApi;
             _movieDbDomainConverter = movieDbDomainConverter;
+            _tvDbApi = tvDbApi;
+            _tvDbDomainConverter = tvDbDomainConverter;
             _tvSeriesContext = tvSeriesContext;
             _movieDbImportServiceDbHelper = movieDbImportServiceDbHelper;
             _logger = logger;
             _configuration = configuration;
             _idSource = (IdSource)Enum.Parse(typeof(IdSource), _configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("IdSource").Value, true);
-            _popularPages = 5;
+            _popularPages = 1;
             _isInitialized = false;
         }
 
@@ -94,6 +104,8 @@ namespace ImportService.Worker.MovieDb
                 await ImportPersonsDetails();
                 _logger.LogInformation("Finished Import Person Details");
 
+                await GetSeasonDetailsToImport();
+
                 if (_importSeasonsIds != null)
                 {
                     _logger.LogInformation("Start Import Season Details");
@@ -104,6 +116,14 @@ namespace ImportService.Worker.MovieDb
                 _logger.LogInformation("Start Import Series Credits");
                 await ImportSeriesCredits();
                 _logger.LogInformation("Finished Import Series Credits");
+
+                _logger.LogInformation("Start Import Series External Ids");
+                await ImportSeriesExternalIds();
+                _logger.LogInformation("Finished Import Series External Ids");
+
+                _logger.LogInformation("Start Import Series Brodcast Time and Runtime");
+                await ImportSeriesDetailsFromTvDb();
+                _logger.LogInformation("Finished Import Series Brodcast Time and Runtime");
             }
             else
                 _logger.LogError("Import worker is not initialized");
@@ -161,7 +181,28 @@ namespace ImportService.Worker.MovieDb
                 .OrderByDescending(x => x.MovieDbId)
                 .Select(x => x.MovieDbId.Value)
                 .ToListAsync();
+        }
 
+        private void InitializeFromConfig()
+        {
+            var seriesMinIndex = Convert.ToInt32(_configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("SeriesIdMinIndex").Value);
+            var seriesMaxIndex = Convert.ToInt32(_configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("SeriesIdMaxIndex").Value);
+
+            var personsMinIndex = Convert.ToInt32(_configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("PersonsIdMinIndex").Value);
+            var personsMaxIndex = Convert.ToInt32(_configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("PersonsIdMaxIndex").Value);
+
+            for (long i = seriesMinIndex; i <= seriesMaxIndex; i++)
+                _importSeriesIds.Add(i);
+
+            for (long i = personsMinIndex; i <= personsMaxIndex; i++)
+                _importPersonsIds.Add(i);
+
+            // Cannot take it from config
+            _importSeasonsIds = null;
+        }
+
+        private async Task GetSeasonDetailsToImport()
+        {
             var seriesIdsFromDb = await _tvSeriesContext
                 .Series
                 .Where(x => x.IsImportEnabled)
@@ -172,9 +213,9 @@ namespace ImportService.Worker.MovieDb
             foreach (var seriesId in seriesIdsFromDb)
             {
                 var seasons = await _tvSeriesContext
-                        .Seasons
-                        .Where(x => x.SeriesId == seriesId)
-                        .ToListAsync();
+                    .Seasons
+                    .Where(x => x.SeriesId == seriesId)
+                    .ToListAsync();
 
                 // TODO optimize this? Do I really need to fetch every series separately?
                 var movieDbSeriesId = await _tvSeriesContext
@@ -201,24 +242,6 @@ namespace ImportService.Worker.MovieDb
                     }
                 }
             }
-        }
-
-        private void InitializeFromConfig()
-        {
-            var seriesMinIndex = Convert.ToInt32(_configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("SeriesIdMinIndex").Value);
-            var seriesMaxIndex = Convert.ToInt32(_configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("SeriesIdMaxIndex").Value);
-
-            var personsMinIndex = Convert.ToInt32(_configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("PersonsIdMinIndex").Value);
-            var personsMaxIndex = Convert.ToInt32(_configuration.GetSection("ImportWorker").GetSection("MovieDb").GetSection("PersonsIdMaxIndex").Value);
-
-            for (long i = seriesMinIndex; i <= seriesMaxIndex; i++)
-                _importSeriesIds.Add(i);
-
-            for (long i = personsMinIndex; i <= personsMaxIndex; i++)
-                _importPersonsIds.Add(i);
-
-            // Cannot take it from config
-            _importSeasonsIds = null;
         }
 
         private async Task ImportSeriesDetails()
@@ -301,6 +324,7 @@ namespace ImportService.Worker.MovieDb
                     _logger.LogInformation("Person with MovieDbId [{0}] not found", personId);
                 }
             }
+
         }
 
         // It is actually importing all episodes - seasons are already imported with series 
@@ -426,6 +450,74 @@ namespace ImportService.Worker.MovieDb
                 else
                 {
                     _logger.LogInformation("SeriesId [{0}] with crew not found in db", seriesId);
+                }
+            }
+        }
+
+        private async Task ImportSeriesExternalIds()
+        {
+            for (var index = 0; index < _importSeriesIds.Count - 1; index++)
+            {
+                var seriesId = _importSeriesIds.ElementAt(index);
+
+                var seriesExternalIdsJson = await _movieDbApi.GetSeriesExternalIds(seriesId);
+
+                if (seriesExternalIdsJson != null)
+                {
+                    var seriesFromImport = _movieDbDomainConverter.ConvertToSeriesWithExternalIds(seriesExternalIdsJson);
+
+                    var seriesFromDb = await _tvSeriesContext
+                        .Series
+                        .Where(x => x.MovieDbId == seriesId)
+                        .FirstOrDefaultAsync();
+
+                    await _movieDbImportServiceDbHelper.UpdateSeriesExternalIds(seriesFromDb, seriesFromImport);
+
+                }
+                else
+                {
+                    _logger.LogInformation("Series with MovieDbId [{0}] not found", seriesId);
+                }
+            }
+        }
+
+        private async Task ImportSeriesDetailsFromTvDb()
+        {
+            // get and set token
+            await _tvDbApi.RefreshJwtToken();
+
+            for (var index = 0; index < _importSeriesIds.Count - 1; index++)
+            {
+                var seriesId = _importSeriesIds.ElementAt(index);
+
+                var tvDbId = await _tvSeriesContext
+                    .Series
+                    .Where(x => x.MovieDbId == seriesId)
+                    .Select(x => x.TvDbId)
+                    .FirstOrDefaultAsync();
+
+                SeriesJson seriesJson = null;
+
+                if (tvDbId != null)
+                {
+                    seriesJson = await _tvDbApi.GetSeries(tvDbId.Value);
+                }
+
+                if (seriesJson != null)
+                {
+                    var seriesFromImport = _tvDbDomainConverter.ConvertToSeriesRuntimeAndBrodcast(seriesJson);
+
+                    var seriesFromDb = await _tvSeriesContext
+                        .Series
+                        .Where(x => x.MovieDbId == seriesId)
+                        .FirstOrDefaultAsync();
+
+                    await _movieDbImportServiceDbHelper.UpdateSeriesRuntimeAndBroadcast(seriesFromDb, seriesFromImport);
+
+                }
+                else
+                {
+                    _logger.LogInformation("Series with TvDbId [{0}] not found", tvDbId);
                 }
             }
         }

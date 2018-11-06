@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using MyTvSeries.Domain.Enums;
-using MyTvSeries.Domain.Identity;
 using MyTvSeries.Domain.ManyToMany;
 
 namespace MyTvSeries.Domain.Entities
@@ -22,9 +21,8 @@ namespace MyTvSeries.Domain.Entities
         public virtual ICollection<SeriesStudios> SeriesStudios { get; set; }
         public virtual ICollection<Crew> Crews { get; set; }
 
-        // TODO actually it is not known which episode is running for how long from MovieDb
-        public virtual ICollection<EpisodeRuntime> EpisodeRuntimes { get; set; }
         public virtual ICollection<UserSeries> SeriesUsers { get; set; }
+        public virtual ICollection<FavoritesSeries> FavoritesSeries { get; set; }
 
         public string Name { get; set; }
         public string OriginalName { get; set; }
@@ -37,6 +35,8 @@ namespace MyTvSeries.Domain.Entities
         public int NumberOfSeasons { get; set; }
         public int NumberOfEpisodes { get; set; }
 
+
+        public int EpisodeRuntime { get; set; }
         // TODO calculate this somewhere (maybe after episodes import (?))
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalRuntime { get; set; }
@@ -52,9 +52,9 @@ namespace MyTvSeries.Domain.Entities
 
         public bool IsImportEnabled { get; set; }
 
-        public long CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
-        public long? LastChangedBy { get; set; }
+        public string LastChangedBy { get; set; }
         public DateTime? LastChangedAt { get; set; }
     }
 }

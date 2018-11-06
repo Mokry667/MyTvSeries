@@ -13,9 +13,9 @@ namespace MyTvSeries.Domain.Entities
         public string Name { get; set; }
         public string ShortName { get; set; }
 
-        public long CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
-        public long? LastChangedBy { get; set; }
+        public string LastChangedBy { get; set; }
         public DateTime? LastChangedAt { get; set; }
     }
 }

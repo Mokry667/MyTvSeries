@@ -7,7 +7,9 @@ namespace ImportService.TheTvDb.Converter
     public interface ITvDbDomainConverter
     {
         Task<Series> ConvertToSeries(SeriesJson seriesJson);
+        Series ConvertToSeriesRuntimeAndBrodcast(SeriesJson seriesJson);
 
         Person ConvertToPerson(SeriesActorJson seriesActorJson);
+
     }
 }

@@ -159,6 +159,18 @@ namespace ImportService.TheTvDb.Api
             {
                 _isTokenFresh = false;
             }
+
+            // try again after some time
+            if (response.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                System.Threading.Thread.Sleep(5000);
+                response = await _httpClient.GetAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
+            }
+
             return null;
         }
 

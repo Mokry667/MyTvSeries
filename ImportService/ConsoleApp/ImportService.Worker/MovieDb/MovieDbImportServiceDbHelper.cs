@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MyTvSeries.Domain.Ef;
 using MyTvSeries.Domain.Entities;
@@ -14,20 +15,19 @@ namespace ImportService.Worker.MovieDb
         private readonly IMovieDbMapper _movieDbMapper;
         private readonly ILogger<IMovieDbImportServiceDbHelper> _logger;
 
-        private readonly long _systemId;
+        private readonly string _systemGuid;
 
         #endregion
 
         #region Ctors
 
         public MovieDbImportServiceDbHelper(ITvSeriesContext tvSeriesContext, IMovieDbMapper movieDbMapper, 
-            ILogger<IMovieDbImportServiceDbHelper> logger)
+            ILogger<IMovieDbImportServiceDbHelper> logger, IConfiguration configuration)
         {
             _tvSeriesContext = tvSeriesContext;
             _movieDbMapper = movieDbMapper;
             _logger = logger;
-            // TODO change this in the future
-            _systemId = 1;
+            _systemGuid = configuration.GetSection("System").GetSection("SystemGuid").Value;
         }
 
         #endregion
@@ -148,6 +148,39 @@ namespace ImportService.Worker.MovieDb
             }
         }
 
+        public async Task UpdateSeriesExternalIds(Series seriesFromDb, Series seriesFromImport)
+        {
+            if (seriesFromDb.TvDbId != seriesFromImport.TvDbId || seriesFromDb.ImdbId != seriesFromImport.ImdbId)
+            {
+                seriesFromDb = _movieDbMapper.MapSeriesExternalIdsFromImportToSeriesFromDb(seriesFromDb, seriesFromImport);
+                seriesFromDb = SetAuditValuesForUpdateSeries(seriesFromDb);
+                _tvSeriesContext.Series.Update(seriesFromDb);
+                await _tvSeriesContext.SaveChangesAsync();
+                _logger.LogInformation("Updated series externals id with id [{0}]", seriesFromDb.Id);
+            }
+            else
+            {
+                _logger.LogInformation("Skip external id update for series with id [{0}]", seriesFromDb.Id);
+            }
+        }
+
+        public async Task UpdateSeriesRuntimeAndBroadcast(Series seriesFromDb, Series seriesFromImport)
+        {
+            if (seriesFromDb.AirDayOfWeek != seriesFromImport.AirDayOfWeek || seriesFromDb.AirTime != seriesFromImport.AirTime
+                || seriesFromDb.EpisodeRuntime != seriesFromImport.EpisodeRuntime)
+            {
+                seriesFromDb = _movieDbMapper.MapSeriesBroadcastAndRuntimeFromImportToSeriesFromDb(seriesFromDb, seriesFromImport);
+                seriesFromDb = SetAuditValuesForUpdateSeries(seriesFromDb);
+                _tvSeriesContext.Series.Update(seriesFromDb);
+                await _tvSeriesContext.SaveChangesAsync();
+                _logger.LogInformation("Updated series brodcast time and runtime for series with id [{0}]", seriesFromDb.Id);
+            }
+            else
+            {
+                _logger.LogInformation("Skip brodcast time and runtime update for series with id [{0}]", seriesFromDb.Id);
+            }
+        }
+
         #endregion
 
         #region Private methods
@@ -158,7 +191,7 @@ namespace ImportService.Worker.MovieDb
         private Series SetAuditValuesForAddSeries(Series series)
         {
             series.CreatedAt = DateTime.UtcNow;
-            series.CreatedBy = _systemId;
+            series.CreatedBy = _systemGuid;
             series.IsImportEnabled = true;
             return series;
         }
@@ -166,7 +199,7 @@ namespace ImportService.Worker.MovieDb
         private Series SetAuditValuesForUpdateSeries(Series series)
         {
             series.LastChangedAt = DateTime.UtcNow;
-            series.LastChangedBy = _systemId;
+            series.LastChangedBy = _systemGuid;
             series.IsImportEnabled = true;
             return series;
         }
@@ -174,7 +207,7 @@ namespace ImportService.Worker.MovieDb
         private Person SetAuditValuesForAddPerson(Person person)
         {
             person.CreatedAt = DateTime.UtcNow;
-            person.CreatedBy = _systemId;
+            person.CreatedBy = _systemGuid;
             person.IsImportEnabled = true;
             return person;
         }
@@ -182,7 +215,7 @@ namespace ImportService.Worker.MovieDb
         private Person SetAuditValuesForUpdatePerson(Person person)
         {
             person.LastChangedAt = DateTime.UtcNow;
-            person.LastChangedBy = _systemId;
+            person.LastChangedBy = _systemGuid;
             person.IsImportEnabled = true;
             return person;
         }
@@ -190,7 +223,7 @@ namespace ImportService.Worker.MovieDb
         private Season SetAuditValuesForAddSeason(Season season)
         {
             season.CreatedAt = DateTime.UtcNow;
-            season.CreatedBy = _systemId;
+            season.CreatedBy = _systemGuid;
             season.IsImportEnabled = true;
             return season;
         }
@@ -198,7 +231,7 @@ namespace ImportService.Worker.MovieDb
         private Season SetAuditValuesForUpdateSeason(Season season)
         {
             season.LastChangedAt = DateTime.UtcNow;
-            season.LastChangedBy = _systemId;
+            season.LastChangedBy = _systemGuid;
             season.IsImportEnabled = true;
             return season;
         }
@@ -206,7 +239,7 @@ namespace ImportService.Worker.MovieDb
         private Episode SetAuditValuesForAddEpisode(Episode episode)
         {
             episode.CreatedAt = DateTime.UtcNow;
-            episode.CreatedBy = _systemId;
+            episode.CreatedBy = _systemGuid;
             episode.IsImportEnabled = true;
             return episode;
         }
@@ -214,7 +247,7 @@ namespace ImportService.Worker.MovieDb
         private Episode SetAuditValuesForUpdateEpisode(Episode episode)
         {
             episode.LastChangedAt = DateTime.UtcNow;
-            episode.LastChangedBy = _systemId;
+            episode.LastChangedBy = _systemGuid;
             episode.IsImportEnabled = true;
             return episode;
         }
@@ -222,7 +255,7 @@ namespace ImportService.Worker.MovieDb
         private Character SetAuditValuesForAddCharacter(Character character)
         {
             character.CreatedAt = DateTime.UtcNow;
-            character.CreatedBy = _systemId;
+            character.CreatedBy = _systemGuid;
             character.IsImportEnabled = true;
             return character;
         }
@@ -230,7 +263,7 @@ namespace ImportService.Worker.MovieDb
         private Character SetAuditValuesForUpdateCharacter(Character character)
         {
             character.LastChangedAt = DateTime.UtcNow;
-            character.LastChangedBy = _systemId;
+            character.LastChangedBy = _systemGuid;
             character.IsImportEnabled = true;
             return character;
         }
@@ -238,7 +271,7 @@ namespace ImportService.Worker.MovieDb
         private Crew SetAuditValuesForAddCharacter(Crew crew)
         {
             crew.CreatedAt = DateTime.UtcNow;
-            crew.CreatedBy = _systemId;
+            crew.CreatedBy = _systemGuid;
             crew.IsImportEnabled = true;
             return crew;
         }
@@ -246,7 +279,7 @@ namespace ImportService.Worker.MovieDb
         private Crew SetAuditValuesForUpdateCharacter(Crew crew)
         {
             crew.LastChangedAt = DateTime.UtcNow;
-            crew.LastChangedBy = _systemId;
+            crew.LastChangedBy = _systemGuid;
             crew.IsImportEnabled = true;
             return crew;
         }

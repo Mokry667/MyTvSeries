@@ -11,5 +11,7 @@ namespace ImportService.Worker.MovieDb
         Task AddOrUpdateEpisode(Episode episodeFromDb, Episode episodeFromImport);
         Task AddOrUpdateCharacter(Character characterFromDb, Character characterFromImport);
         Task AddOrUpdateCrew(Crew crewFromDb, Crew crewFromImport);
+        Task UpdateSeriesExternalIds(Series seriesFromDb, Series seriesFromImport);
+        Task UpdateSeriesRuntimeAndBroadcast(Series seriesFromDb, Series seriesFromImport);
     }
 }

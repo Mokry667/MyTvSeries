@@ -15,10 +15,9 @@ namespace MyTvSeries.Domain.Entities
 
         public string Name { get; set; }
         public string Overview { get; set; }
-        public long? SeasonNumber { get; set; }
+        public int? SeasonNumber { get; set; }
         public DateTime? AiredFrom { get; set; }
-        public DateTime? AiredTo { get; set; }
-        public long? NumberOfEpisodes { get; set; }
+        public int? NumberOfEpisodes { get; set; }
 
         public bool IsImportEnabled { get; set; }
 

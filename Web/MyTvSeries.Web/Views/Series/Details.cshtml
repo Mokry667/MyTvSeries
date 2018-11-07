@@ -169,5 +169,72 @@
                 }
             </div>
         </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <h2>Cast</h2>
+                @foreach (var cast in Model.Cast)
+                {
+                    <div class="col-md-3">
+                        @if (cast.Picture != null)
+                        {
+                            <img src="data:image;base64,@System.Convert.ToBase64String(cast.Picture)" alt="~/images/no-image-available.png" class="img-responsive" width="120" height="20" />
+                        }
+                        else
+                        {
+                            <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="160" />
+                        }
+                        <strong>@cast.Name</strong>
+                        <p>@cast.Character</p>
+                    </div>
+                }
+            </div>
+            <div class="row">
+                View all cast link
+            </div>
+            <div class="row">
+                <h2>Crew</h2>
+                @foreach (var crew in Model.Crew)
+                {
+                    <div class="col-md-3">
+                        @if (crew.Picture != null)
+                        {
+                            <img src="data:image;base64,@System.Convert.ToBase64String(crew.Picture)" alt="~/images/no-image-available.png" class="img-responsive" width="120" height="20" />
+                        }
+                        else
+                        {
+                            <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="160" />
+                        }
+                        <strong>@crew.Name</strong>
+                        <p>@crew.Job</p>
+                    </div>
+                }
+            </div>
+            <div class="row">
+                View all crew link
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h2>Seasons</h2>
+            <div class="panel panel-default">
+                <ul class="list-group">
+                    @foreach (var season in Model.SeasonSeries)
+                    {
+                        <li class="list-group-item">
+                            <h4>@season.SeasonName</h4>
+                            Premiered @season.AiredFrom
+                        </li>
+                    }
+                    @if (Model.IsMoreSeasons)
+                    {
+                        <li class="list-group-item">More seasons link</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+        <div class="row"> 
+            <h2>Reviews</h2>
+        </div>
     </div>
 </div>

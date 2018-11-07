@@ -106,9 +106,9 @@ namespace ImportService.TheMovieDb.Converter
                     SeriesId = seriesId,
                     Name = seasonJson.Name,
                     Overview = seasonJson.Overview,
-                    SeasonNumber = seasonJson.SeasonNumber,
+                    SeasonNumber = (int?) seasonJson.SeasonNumber,
                     AiredFrom = airedFromDateValue,
-                    NumberOfEpisodes = seasonJson.EpisodeCount
+                    NumberOfEpisodes = (int?) seasonJson.EpisodeCount
                 };
 
                 seasons.Add(season);

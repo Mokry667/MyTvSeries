@@ -66,5 +66,16 @@ namespace MyTvSeries.Web.Models.Series
         [EpisodeNumberValidator("NumberOfEpisodes")]
         public int EpisodesWatched { get; set; }
 
+        [Display(Name = "Seasons")]
+        public List<SeasonSeriesDetailViewModel> SeasonSeries { get; set; }
+
+        [Display(Name = "Cast")]
+        public List<CastSeriesDetailViewModel> Cast { get; set; }
+
+        [Display(Name = "Crew")]
+        public List<CrewSeriesDetailViewModel> Crew { get; set; }
+
+        public bool IsMoreSeasons { get; set; }
+
     }
 }

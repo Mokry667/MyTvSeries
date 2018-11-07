@@ -75,8 +75,13 @@ namespace MyTvSeries.Web.Controllers
                 return NotFound();
             }
 
-            var series = await _context.Series.Include(x => x.SeriesGenres).ThenInclude(x => x.Genre)
+            var series = await _context.Series.Include(x => x.Seasons)
+                .Include(x => x.SeriesCharacters)
+                .Include(x => x.Crews)
+                .Include(x => x.SeriesGenres)
+                .ThenInclude(x => x.Genre)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (series == null)
             {
                 return NotFound();
@@ -90,6 +95,7 @@ namespace MyTvSeries.Web.Controllers
                 Name = series.Name,
                 OriginalName = series.OriginalName,
                 SiteRating = series.UserRating,
+                UserVotes = series.UserVotes,
                 Overview = series.Overview,
                 Status = series.Status,
                 AiredFrom = series.AiredFrom,
@@ -101,12 +107,92 @@ namespace MyTvSeries.Web.Controllers
                 EpisodeRuntime = series.EpisodeRuntime,
                 TotalRuntime = series.TotalRuntime,
                 PosterContent = series.PosterContent,
-                Genres = new List<Genre>()
+                Genres = new List<Genre>(),
+                SeasonSeries = new List<SeasonSeriesDetailViewModel>(),
+                Cast = new List<CastSeriesDetailViewModel>(),
+                Crew = new List<CrewSeriesDetailViewModel>()
             };
 
+            // GENRES
             foreach (var seriesGenre in series.SeriesGenres)
             {
                 viewModel.Genres.Add(seriesGenre.Genre);
+            }
+
+            //SEASONS
+            var seasonsOnView = 5;
+            var seasons = series.Seasons.OrderBy(x => x.SeasonNumber).ToList();
+
+            for (int i = 0; i < seasonsOnView; i++)
+            {
+                if (i < seasons.Count)
+                {
+                    var season = seasons.ElementAt(i);
+                    var seasonViewModel = new SeasonSeriesDetailViewModel
+                    {
+                        NumberOfEpisodes = season.NumberOfEpisodes,
+                        SeasonName = season.Name,
+                        SeasonNumber = season.SeasonNumber,
+                    };
+                    if (season.AiredFrom != null)
+                        seasonViewModel.AiredFrom = season.AiredFrom.Value.ToString("dd MMMM yyyy");
+
+                    viewModel.SeasonSeries.Add(seasonViewModel);
+                }
+                else
+                    break;
+            }
+            
+
+            viewModel.IsMoreSeasons = seasons.Count > viewModel.SeasonSeries.Count;
+
+            //CAST
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (i < series.SeriesCharacters.Count)
+                {
+                    var characterId = series.SeriesCharacters.ElementAt(i).CharacterId;
+                    var castMember = await _context.Characters
+                        .Include(x => x.Person)
+                        .FirstOrDefaultAsync(x => x.Id == characterId);                   
+
+                    var castViewModel = new CastSeriesDetailViewModel
+                    {
+                        Character = castMember.Name,
+                        Name = castMember.Person.Name,
+                        Picture = castMember.Person.PosterContent
+                    };
+
+                    viewModel.Cast.Add(castViewModel);
+                }
+                else
+                    break;
+            }
+
+            // Crew
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (i < series.Crews.Count)
+                {
+                    var crew = series.Crews.ElementAt(i);
+                    var personId = crew.PersonId;
+                    var person = await _context.Persons
+                        .FirstOrDefaultAsync(x => x.Id == personId);
+
+                    var crewViewModel = new CrewSeriesDetailViewModel
+                    {
+                        Name = person.Name,
+                        Job = crew.Job,
+                        Department = crew.Department,                  
+                        Picture = person.PosterContent
+                    };
+
+                    viewModel.Crew.Add(crewViewModel);
+                }
+                else
+                    break;
             }
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -132,8 +218,6 @@ namespace MyTvSeries.Web.Controllers
         // GET: Series/Details/5
         public async Task<IActionResult> Details(UserSeriesDetailViewModel viewModel)
         {
-            viewModel.Genres = new List<Genre>();
-
             Series series = null;
 
             if (ModelState.IsValid)
@@ -192,25 +276,9 @@ namespace MyTvSeries.Web.Controllers
                     _context.Update(userSeries);
                 }
 
-                series = await _context.Series
-                    .Include(x => x.SeriesGenres)
-                    .ThenInclude(x => x.Genre)
-                    .FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
-
-                if (series != null)
-                {
-                    viewModel.SiteRating = series.UserRating;
-                    viewModel.PosterContent = series.PosterContent;
-
-                    foreach (var seriesGenre in series.SeriesGenres)
-                    {
-                        viewModel.Genres.Add(seriesGenre.Genre);
-                    }
-                }
-
                 await _context.SaveChangesAsync();
 
-                return View(viewModel);
+                return RedirectToAction("Details", new { id = viewModel.SeriesId } );
             }
             else
             {

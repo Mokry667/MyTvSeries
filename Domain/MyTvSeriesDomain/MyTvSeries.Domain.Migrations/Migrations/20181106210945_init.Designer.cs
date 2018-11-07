@@ -10,7 +10,7 @@ using MyTvSeries.Domain.Ef;
 namespace MyTvSeries.Domain.Migrations.Migrations
 {
     [DbContext(typeof(TvSeriesContext))]
-    [Migration("20181106193007_init")]
+    [Migration("20181106210945_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -439,8 +439,6 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime?>("AiredFrom");
 
-                    b.Property<DateTime?>("AiredTo");
-
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("CreatedBy");
@@ -455,11 +453,11 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<long?>("NumberOfEpisodes");
+                    b.Property<int?>("NumberOfEpisodes");
 
                     b.Property<string>("Overview");
 
-                    b.Property<long?>("SeasonNumber");
+                    b.Property<int?>("SeasonNumber");
 
                     b.Property<long>("SeriesId");
 
@@ -832,7 +830,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
             modelBuilder.Entity("MyTvSeries.Domain.Entities.Season", b =>
                 {
                     b.HasOne("MyTvSeries.Domain.Entities.Series", "Series")
-                        .WithMany()
+                        .WithMany("Seasons")
                         .HasForeignKey("SeriesId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

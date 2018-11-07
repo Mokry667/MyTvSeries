@@ -19,6 +19,7 @@ namespace MyTvSeries.Domain.Entities
         public virtual ICollection<SeriesCountries> SeriesCountries { get; set; }
         public virtual ICollection<SeriesKeywords> SeriesKeywords { get; set; }
         public virtual ICollection<SeriesStudios> SeriesStudios { get; set; }
+        public virtual ICollection<Season> Seasons { get; set; }
         public virtual ICollection<Crew> Crews { get; set; }
 
         public virtual ICollection<UserSeries> SeriesUsers { get; set; }

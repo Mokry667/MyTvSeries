@@ -437,8 +437,6 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<DateTime?>("AiredFrom");
 
-                    b.Property<DateTime?>("AiredTo");
-
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("CreatedBy");
@@ -453,11 +451,11 @@ namespace MyTvSeries.Domain.Migrations.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<long?>("NumberOfEpisodes");
+                    b.Property<int?>("NumberOfEpisodes");
 
                     b.Property<string>("Overview");
 
-                    b.Property<long?>("SeasonNumber");
+                    b.Property<int?>("SeasonNumber");
 
                     b.Property<long>("SeriesId");
 
@@ -830,7 +828,7 @@ namespace MyTvSeries.Domain.Migrations.Migrations
             modelBuilder.Entity("MyTvSeries.Domain.Entities.Season", b =>
                 {
                     b.HasOne("MyTvSeries.Domain.Entities.Series", "Series")
-                        .WithMany()
+                        .WithMany("Seasons")
                         .HasForeignKey("SeriesId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

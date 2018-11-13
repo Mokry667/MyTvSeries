@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Pages.Internal.Account;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyTvSeries.Domain.Ef;
 using MyTvSeries.Domain.Entities;
+using MyTvSeries.Domain.Identity;
 using MyTvSeries.Web.Models.Enums;
 using MyTvSeries.Web.Models.Series;
 using X.PagedList;
@@ -16,10 +19,12 @@ namespace MyTvSeries.Web.Controllers
     public class SeriesController : Controller
     {
         private readonly TvSeriesContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SeriesController(TvSeriesContext context)
+        public SeriesController(TvSeriesContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Series
@@ -78,6 +83,7 @@ namespace MyTvSeries.Web.Controllers
             var series = await _context.Series.Include(x => x.Seasons)
                 .Include(x => x.SeriesCharacters)
                 .Include(x => x.Crews)
+                .Include(x => x.SeriesReviews)
                 .Include(x => x.SeriesGenres)
                 .ThenInclude(x => x.Genre)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -110,7 +116,8 @@ namespace MyTvSeries.Web.Controllers
                 Genres = new List<Genre>(),
                 SeasonSeries = new List<SeasonSeriesDetailViewModel>(),
                 Cast = new List<CastSeriesDetailViewModel>(),
-                Crew = new List<CrewSeriesDetailViewModel>()
+                Crew = new List<CrewSeriesDetailViewModel>(),
+                Reviews = new List<SeriesReviewDetailViewModel>()
             };
 
             // GENRES
@@ -159,6 +166,7 @@ namespace MyTvSeries.Web.Controllers
 
                     var castViewModel = new CastSeriesDetailViewModel
                     {
+                        PersonId = castMember.PersonId,
                         Character = castMember.Name,
                         Name = castMember.Person.Name,
                         Picture = castMember.Person.PosterContent
@@ -183,6 +191,7 @@ namespace MyTvSeries.Web.Controllers
 
                     var crewViewModel = new CrewSeriesDetailViewModel
                     {
+                        PersonId = personId,
                         Name = person.Name,
                         Job = crew.Job,
                         Department = crew.Department,                  
@@ -195,10 +204,59 @@ namespace MyTvSeries.Web.Controllers
                     break;
             }
 
+            // REVIEWS
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (i < series.SeriesReviews.Count)
+                {
+                    var review = series.SeriesReviews.ElementAt(i);
+
+                    var reviewViewModel = new SeriesReviewDetailViewModel()
+                    {
+                        Id = review.Id,
+                        Content = review.Content,
+                        Likes = review.Likes,
+                        WrittenOn = review.CreatedAt
+                    };
+
+                    if (review.LastChangedAt != null)
+                    {
+                        reviewViewModel.WrittenOn = review.LastChangedAt.Value;
+                    }
+
+                    var user = await _userManager.FindByIdAsync(review.UserId);
+                    reviewViewModel.Username = user.UserName;
+
+                    var userRating = await _context.UsersSeries
+                        .Where(x => x.SeriesId == id && x.UserId == user.Id)
+                        .FirstOrDefaultAsync();
+
+                    if (userRating != null)
+                    {
+                        reviewViewModel.Rating = userRating.Rating;
+                    }
+
+                    viewModel.Reviews.Add(reviewViewModel);
+                }
+                else
+                    break;
+            }
+
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
 
             if (userId != null)
             {
+                var review =
+                    await _context.SeriesReviews.FirstOrDefaultAsync(x => x.UserId == userId && x.SeriesId == id);
+
+                if (review != null)
+                {
+                    viewModel.IsReviewWritten = true;
+                    viewModel.ReviewId = review.Id;
+                }
+
                 var userSeries = await _context.UsersSeries.FirstOrDefaultAsync(x => x.UserId == userId && x.SeriesId == id);
 
                 if (userSeries != null)
@@ -208,6 +266,11 @@ namespace MyTvSeries.Web.Controllers
                     viewModel.SeasonsWatched = userSeries.SeasonsWatched;
                     viewModel.EpisodesWatched = userSeries.EpisodesWatched;
                 }
+
+                var favouriteSeries =
+                    await _context.FavoritesSeries.FirstOrDefaultAsync(x => x.UserId == userId && x.SeriesId == id);
+
+                viewModel.IsFavourite = favouriteSeries != null;
             }
 
             return View(viewModel);
@@ -227,6 +290,28 @@ namespace MyTvSeries.Web.Controllers
                 var userSeries =
                     await _context.UsersSeries.FirstOrDefaultAsync(x =>
                         x.UserId == userId && x.SeriesId == viewModel.SeriesId);
+
+                var favouriteSeries =
+                    await _context.FavoritesSeries.FirstOrDefaultAsync(x => x.UserId == userId && x.SeriesId == viewModel.SeriesId);
+
+                if (favouriteSeries == null && viewModel.IsFavourite)
+                {
+                    var newFavoritesSeries = new FavoritesSeries
+                    {
+                        SeriesId = viewModel.SeriesId,
+                        UserId = userId,
+                        CreatedAt = DateTime.UtcNow,
+                        CreatedBy = userId
+                    };
+
+                    _context.FavoritesSeries.Add(newFavoritesSeries);
+                    await _context.SaveChangesAsync();
+
+                }else if (favouriteSeries != null && !viewModel.IsFavourite)
+                {
+                    _context.FavoritesSeries.Remove(favouriteSeries);
+                    await _context.SaveChangesAsync();
+                }
 
                 if (userSeries == null)
                 {
@@ -289,6 +374,8 @@ namespace MyTvSeries.Web.Controllers
 
                 viewModel.SiteRating = series.UserRating;
                 viewModel.PosterContent = series.PosterContent;
+
+                viewModel.Genres = new List<Genre>();
 
                 foreach (var seriesGenre in series.SeriesGenres)
                 {

@@ -10,5 +10,6 @@ namespace MyTvSeries.Domain.Identity
         public virtual ICollection<UserSeries> SeriesUsers { get; set; }
         public virtual ICollection<FavoritesSeries> FavoritesSeries { get; set; }
         public virtual ICollection<FavoritesPerson> FavoritesPersons { get; set; }
+        public virtual ICollection<SeriesReview> SeriesReviews { get; set; }
     }
 }

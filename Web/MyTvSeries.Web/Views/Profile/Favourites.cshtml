@@ -1,0 +1,112 @@
+﻿@using MyTvSeries.Web.Models.Profile
+@model MyTvSeries.Web.Models.Profile.FavouriteListViewModel
+
+@{
+    ViewData["Title"] = "Favourites";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Favourites</h2>
+
+<ul class="nav nav-tabs nav-justified">
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="Index" asp-route-username="@Model.Username">Overview</a>
+    </li>
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="Calendar" asp-route-username="@Model.Username">Calendar</a>
+    </li>
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="SeriesList" asp-route-username="@Model.Username">Series List</a>
+    </li>
+    <li role="presentation" class="active">
+        <a href="#">Favourites</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Reviews</a>
+    </li>
+</ul>
+
+<div class="container-fluid">
+    <h2>Favourites Series</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Last update
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var favouritesSeries in Model.FavouriteSeries)
+        {
+            <tr>
+                <td>
+                    @if (favouritesSeries.PosterContent != null)
+                    {
+                        <div class="col-md-2">
+                            <img src="data:image;base64,@System.Convert.ToBase64String(favouritesSeries.PosterContent)" alt="~/images/no-image-available.png" class="pull-left" width="40" height="50"/>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2">
+                            <img src="~/images/no-image-available.png" class="pull-left" width="40" height="50"/>
+                        </div>
+                    }
+                    <div class="col-md-6">
+                        <a asp-controller="Series" asp-action="Details" asp-route-id="@favouritesSeries.SeriesId">@Html.DisplayFor(modelItem => favouritesSeries.SeriesName)</a>
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => favouritesSeries.LastChangedAt)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    
+    <h2>Favourites People</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Last update
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var favouritePerson in Model.FavouritePersons)
+        {
+            <tr>
+                <td>
+                    @if (favouritePerson.PosterContent != null)
+                    {
+                        <div class="col-md-2">
+                            <img src="data:image;base64,@System.Convert.ToBase64String(favouritePerson.PosterContent)" alt="~/images/no-image-available.png" class="pull-left" width="40" height="50"/>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2">
+                            <img src="~/images/no-image-available.png" class="pull-left" width="40" height="50"/>
+                        </div>
+                    }
+                    <div class="col-md-6">
+                        <a asp-controller="People" asp-action="Details" asp-route-id="@favouritePerson.PersonId">@Html.DisplayFor(modelItem => favouritePerson.PersonName)</a>
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => favouritePerson.LastChangedAt)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+

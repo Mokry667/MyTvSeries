@@ -81,6 +81,25 @@
                         <span asp-validation-for="SeasonsWatched" class="text-danger"></span>
                     </div>
                 </div>
+                <div class="col-md-2">
+                    <label asp-for="IsFavourite" class="control-label"></label>
+                    <div class="form-group">
+                        <button type="button" id="favouriteButton" class="btn btn-primary" data-toggle="button">
+                            @if (Model.IsFavourite)
+                            {
+                                <i id="favouriteIcon" class="fas fa-star">
+                                </i>
+                                <span id="favouriteButtonLabel">Remove from favourites</span>
+                            }
+                            else
+                            {
+                                <i id="favouriteIcon" class="far fa-star">
+                                </i>
+                                <span id="favouriteButtonLabel">Add to favourites</span>
+                            }
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-3">
@@ -101,23 +120,8 @@
                     </div>
                 </div>
             </div>
-            @* MOVE TO CONTROLLER *@
-            <input asp-for="Name" type="hidden"/>
-            <input asp-for="OriginalName" type="hidden"/>
-            <input asp-for="Overview" type="hidden"/>
-            <input asp-for="Status" type="hidden"/>
-            <input asp-for="AiredFrom" type="hidden"/>
-            <input asp-for="AiredTo" type="hidden"/>
-            <input asp-for="AirDayOfWeek" type="hidden"/>
-            <input asp-for="AirTime" type="hidden"/>
-            <input asp-for="NumberOfSeasons" type="hidden"/>
-            <input asp-for="NumberOfEpisodes" type="hidden"/>
-            <input asp-for="TotalRuntime" type="hidden"/>
-            <input asp-for="SiteRating" type="hidden"/>
+            <input asp-for="IsFavourite" type="hidden"/>
             <input asp-for="SeriesId" type="hidden"/>
-            <input asp-for="SiteRating" type="hidden"/>
-            <input asp-for="UserVotes" type="hidden"/>
-            <input asp-for="EpisodeRuntime" type="hidden"/>
         </form>
     </div>
         <div class="row">
@@ -175,18 +179,22 @@
                 <h2>Cast</h2>
                 @foreach (var cast in Model.Cast)
                 {
-                    <div class="col-md-3">
-                        @if (cast.Picture != null)
-                        {
+                <div class="col-md-3">
+                    @if (cast.Picture != null)
+                    {
+                        <a asp-controller="People" asp-action="Details" asp-route-id="@cast.PersonId">
                             <img src="data:image;base64,@System.Convert.ToBase64String(cast.Picture)" alt="~/images/no-image-available.png" class="img-responsive" width="120" height="20" />
-                        }
-                        else
-                        {
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="People" asp-action="Details" asp-route-id="@cast.PersonId">
                             <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="160" />
-                        }
-                        <strong>@cast.Name</strong>
-                        <p>@cast.Character</p>
-                    </div>
+                        </a>
+                    }
+                    <strong><a asp-controller="People" asp-action="Details" asp-route-id="@cast.PersonId">@cast.Name</a></strong>
+                    <p>@cast.Character</p>
+                </div>
                 }
             </div>
             <div class="row">
@@ -196,18 +204,22 @@
                 <h2>Crew</h2>
                 @foreach (var crew in Model.Crew)
                 {
-                    <div class="col-md-3">
-                        @if (crew.Picture != null)
-                        {
+                <div class="col-md-3">
+                    @if (crew.Picture != null)
+                    {
+                        <a asp-controller="People" asp-action="Details" asp-route-id="@crew.PersonId">
                             <img src="data:image;base64,@System.Convert.ToBase64String(crew.Picture)" alt="~/images/no-image-available.png" class="img-responsive" width="120" height="20" />
-                        }
-                        else
-                        {
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="People" asp-action="Details" asp-route-id="@crew.PersonId">
                             <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="160" />
-                        }
-                        <strong>@crew.Name</strong>
-                        <p>@crew.Job</p>
-                    </div>
+                        </a>
+                    }
+                    <strong><a asp-controller="People" asp-action="Details" asp-route-id="@crew.PersonId">@crew.Name</a></strong>
+                    <p>@crew.Job</p>
+                </div>
                 }
             </div>
             <div class="row">
@@ -236,5 +248,36 @@
         <div class="row"> 
             <h2>Reviews</h2>
         </div>
+        @if (!Model.IsReviewWritten)
+        {
+            <a asp-controller="SeriesReviews" asp-action="Create" asp-route-seriesId="@Model.SeriesId">Write Review</a>
+        }
+        else
+        {
+            <a asp-controller="SeriesReviews" asp-action="Details" asp-route-id="@Model.ReviewId">Edit Review</a>   
+        }
+        <ul class="list-group">
+        @foreach (var review in Model.Reviews)
+        {
+            <li class="list-group-item">
+                <div class="col-md-4">
+                    <p style="display: inline">
+                        <strong>Written by @review.Username</strong>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p style="display: inline">
+                        <strong>@review.Likes people found this review helpful</strong>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p style="display: inline">
+                        <strong>Rating: @review.Rating</strong>
+                    </p>
+                </div>
+                <div>@review.Content</div>
+            </li>
+        }
+        </ul>
     </div>
 </div>

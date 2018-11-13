@@ -194,6 +194,66 @@ namespace MyTvSeries.Web.Controllers
             return View(viewModel);
         }
 
+        public async Task<IActionResult> Favourites(string username)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var viewModel = new FavouriteListViewModel
+            {
+                Username = username,
+                FavouriteSeries = new List<FavouriteSeriesOnListViewModel>(),
+                FavouritePersons = new List<FavouritePersonOnListViewModel>()
+            };
+
+            var favouriteSeries = await _context.FavoritesSeries
+                .Include(x => x.Series)
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+
+            foreach (var favourite in favouriteSeries)
+            {
+                var favouriteSeriesViewModel = new FavouriteSeriesOnListViewModel
+                {
+                    SeriesId = favourite.SeriesId,
+                    SeriesName = favourite.Series.Name,
+                    PosterContent = favourite.Series.PosterContent,
+                    LastChangedAt = favourite.Series.CreatedAt
+                };
+
+                if (favourite.Series.LastChangedAt != null)
+                {
+                    favouriteSeriesViewModel.LastChangedAt = favourite.Series.LastChangedAt.Value;
+                }
+
+                viewModel.FavouriteSeries.Add(favouriteSeriesViewModel);
+            }
+
+            var favouritePersons = await _context.FavoritesPersons
+                .Include(x => x.Person)
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+
+            foreach (var favourite in favouritePersons)
+            {
+                var favoruitePersonViewModel = new FavouritePersonOnListViewModel
+                {
+                    PersonId = favourite.PersonId,
+                    PersonName = favourite.Person.Name,
+                    PosterContent = favourite.Person.PosterContent,
+                    LastChangedAt = favourite.Person.CreatedAt
+                };
+
+                if (favourite.Person.LastChangedAt != null)
+                {
+                    favoruitePersonViewModel.LastChangedAt = favourite.Person.LastChangedAt.Value;
+                }
+
+                viewModel.FavouritePersons.Add(favoruitePersonViewModel);
+            }
+
+            return View(viewModel);
+        }
+
         private SeriesOnListWithWatchStatusViewModel ToSeriesOnList(IEnumerable<UserSeries> userSeries, string watchStatus)
         {
 

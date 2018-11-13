@@ -75,6 +75,15 @@ namespace MyTvSeries.Web.Models.Series
         [Display(Name = "Crew")]
         public List<CrewSeriesDetailViewModel> Crew { get; set; }
 
+        [Display(Name = "Reviews")]
+        public List<SeriesReviewDetailViewModel> Reviews { get; set; } 
+
+        public bool IsReviewWritten { get; set; }
+        public long ReviewId { get; set; }
+
+        [Display(Name="")]
+        public bool IsFavourite { get; set; }
+
         public bool IsMoreSeasons { get; set; }
 
     }

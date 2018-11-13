@@ -24,6 +24,7 @@ namespace MyTvSeries.Domain.Entities
 
         public virtual ICollection<UserSeries> SeriesUsers { get; set; }
         public virtual ICollection<FavoritesSeries> FavoritesSeries { get; set; }
+        public virtual ICollection<SeriesReview> SeriesReviews { get; set; }
 
         public string Name { get; set; }
         public string OriginalName { get; set; }

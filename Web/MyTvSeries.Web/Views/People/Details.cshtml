@@ -1,115 +1,141 @@
-﻿@model MyTvSeries.Domain.Entities.Person
+﻿@model MyTvSeries.Web.Models.People.PersonDetailViewModel
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Person</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.TvDbId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.TvDbId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.MovieDbId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.MovieDbId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ImdbId)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ImdbId)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Gender)
-        </dt>
-        <dd>
+<div class="container-fluid">
+    <div class="row">
+        <h2></h2>
+        @if (Model.PosterContent != null)
+        {
+            <div class="col-md-3">
+                <img src="data:image;base64,@System.Convert.ToBase64String(Model.PosterContent)" alt="~/images/no-image-available.png" class="img-responsive pull-left" width="240" height="240"/>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-3">
+                <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="320"/>
+            </div>
+        }
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-9">
+                    <h1>@Model.Name</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <h4>@Html.DisplayNameFor(model => model.Biography)</h4>
+                    @Html.DisplayFor(model => model.Biography)
+                </div>
+            </div>
+            <h2></h2>
+            <div class="row">
+                <div class="form-group">
+                    <form asp-action="AddOrRemoveFromFavourites">
+                        <button type="submit" class="btn btn-primary">
+                            @if (Model.IsFavourite)
+                            {
+                                <i id="favouriteIcon" class="fas fa-star">
+                                </i>
+                                <span id="favouriteButtonLabel">Remove from favourites</span>
+                            }
+                            else
+                            {
+                                <i id="favouriteIcon" class="far fa-star">
+                                </i>
+                                <span id="favouriteButtonLabel">Add to favourites</span>
+                            }
+                        </button>
+                        <input type="hidden" name="id" value="@Model.PersonId" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 text-left">
+            <strong>@Html.DisplayNameFor(model => model.Gender):</strong>
             @Html.DisplayFor(model => model.Gender)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Biography)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Biography)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Birthday)
-        </dt>
-        <dd>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 text-left">
+            <strong>@Html.DisplayNameFor(model => model.Birthday):</strong>
             @Html.DisplayFor(model => model.Birthday)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Deathday)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Deathday)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PlaceOfBirth)
-        </dt>
-        <dd>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 text-left">
+            <strong>@Html.DisplayNameFor(model => model.PlaceOfBirth):</strong>
             @Html.DisplayFor(model => model.PlaceOfBirth)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsImportEnabled)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsImportEnabled)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PosterName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PosterName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PosterContent)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PosterContent)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastChangedBy)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastChangedBy)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastChangedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastChangedAt)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+    @if (Model.Deathday != null)
+    {
+        <div class="row">
+            <div class="col-md-3 text-left">
+                <strong>@Html.DisplayNameFor(model => model.Deathday):</strong>
+                @Html.DisplayFor(model => model.Deathday)
+            </div>
+        </div>
+    }
+    <div class="row">
+        @if (Model.Cast.Count > 0)
+        {
+            <h2>Acting</h2>
+            <table class="table table-bordered">
+                <thead>
+                </thead>
+                <tbody>
+                @foreach (var cast in Model.Cast)
+                {
+                    <tr>
+                        <td>
+                            @cast.Year
+                        </td>
+                        <td>
+                            In <a asp-controller="Series" asp-action="Details" asp-route-id="@cast.SeriesId">@cast.SeriesName</a> as @cast.CharacterName
+                        </td>
+                        <td>
+                            <i class="fas fa-star" style="color: yellow"></i> @cast.SeriesRating
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+    <div class="row">
+        @if (Model.Departments.Count > 0)
+        {
+            foreach (var department in Model.Departments)
+             {
+                 <h2>@department.DepartmentName</h2>
+                 <table class="table table-bordered">
+                     <thead>
+                     </thead>
+                     <tbody>
+                     @foreach (var crew in department.Crew)
+                     {
+                         <tr>
+                             <td>
+                                 @crew.Year
+                             </td>
+                             <td>
+                                 In <a asp-controller="Series" asp-action="Details" asp-route-id="@crew.SeriesId">@crew.SeriesName</a> as @crew.Job
+                             </td>
+                             <td>
+                                 <i class="fas fa-star" style="color: yellow"></i> @crew.SeriesRating
+                             </td>
+                         </tr>
+                     }
+                     </tbody>
+                 </table>
+             }
+        }
+    </div>
 </div>

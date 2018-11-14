@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,6 +12,7 @@ using MyTvSeries.Domain.Entities;
 using MyTvSeries.Domain.Enums;
 using MyTvSeries.Web.Models.Profile;
 using Newtonsoft.Json;
+using X.PagedList;
 
 namespace MyTvSeries.Web.Controllers
 {
@@ -149,19 +152,120 @@ namespace MyTvSeries.Web.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Calendar(string username)
+        public async Task<IActionResult> Calendar(string username, int? week)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var viewModel = new CalendarViewModel { Username = username };
+            var viewModel = new CalendarViewModel
+            {
+                Username = username,
+                Monday = new List<SeriesOnCalendarViewModel>(),
+                Tuesday = new List<SeriesOnCalendarViewModel>(),
+                Wednesday = new List<SeriesOnCalendarViewModel>(),
+                Thursday = new List<SeriesOnCalendarViewModel>(),
+                Friday = new List<SeriesOnCalendarViewModel>(),
+                Saturday = new List<SeriesOnCalendarViewModel>(),
+                Sunday = new List<SeriesOnCalendarViewModel>()
+            };
 
-            // take series that are still airing
-            var airingSeries = await _context.UsersSeries.Include(x => x.Series)
+            if (week == null) week = 0;
+
+            viewModel.CurrentWeek = week.Value;
+
+
+            var today = DateTime.UtcNow.AddDays(week.Value * 7);
+
+            if (week == 0)
+            {
+                viewModel.Today = today.DayOfWeek;
+            }
+
+            var nearestMonday = today;
+            while ( nearestMonday.DayOfWeek != DayOfWeek.Monday)
+            {
+                nearestMonday = nearestMonday.AddDays(-1);
+            }
+
+            viewModel.StartOfWeekDate = nearestMonday;
+            viewModel.EndOfWeekDate = nearestMonday.AddDays(6);
+
+            var airingSeries = await _context.UsersSeries
+                .Include(x => x.Series)
                 .Where(x => x.UserId == userId && x.Series.Status == SeriesStatus.Airing)
                 .ToListAsync();
 
+            foreach (var userSeries in airingSeries)
+            {
+                // TODO should only one season be taken into consideration ?
+                var latestSeason = await _context.Seasons
+                    .Where(x => x.SeriesId == userSeries.SeriesId)
+                    .Include(x => x.Episodes)
+                    .OrderByDescending(x => x.AiredFrom)
+                    .FirstOrDefaultAsync();
+
+                // should be one
+                var episodesInThisWeek = await latestSeason.Episodes
+                    .Where(x => DatesAreInTheSameWeek(x.Aired, nearestMonday)).ToListAsync();
+
+                foreach (var episodeInThisWeek in episodesInThisWeek)
+                {
+                    if (episodeInThisWeek != null && episodeInThisWeek.Aired != null)
+                    {
+                        var seriesViewModel = new SeriesOnCalendarViewModel
+                        {
+                            SeriesId = userSeries.SeriesId,
+                            SeriesName = userSeries.Series.Name,
+                            AirTime = userSeries.Series.AirTime,
+                            SeasonNumber = episodeInThisWeek.SeasonNumber,
+                            EpisodeNumber = episodeInThisWeek.SeasonEpisodeNumber
+                        };
+
+                        // userSeries.Series.AirDayOfWeek
+                        switch (episodeInThisWeek.Aired.Value.DayOfWeek)
+                        {
+                            case DayOfWeek.Monday:
+                                viewModel.Monday.Add(seriesViewModel);
+                                break;
+                            case DayOfWeek.Tuesday:
+                                viewModel.Tuesday.Add(seriesViewModel);
+                                break;
+                            case DayOfWeek.Wednesday:
+                                viewModel.Wednesday.Add(seriesViewModel);
+                                break;
+                            case DayOfWeek.Thursday:
+                                viewModel.Thursday.Add(seriesViewModel);
+                                break;
+                            case DayOfWeek.Friday:
+                                viewModel.Friday.Add(seriesViewModel);
+                                break;
+                            case DayOfWeek.Saturday:
+                                viewModel.Saturday.Add(seriesViewModel);
+                                break;
+                            case DayOfWeek.Sunday:
+                                viewModel.Sunday.Add(seriesViewModel);
+                                break;
+                        }
+
+                    }
+                }
+            }
+
 
             return View(viewModel);
+        }
+
+        private bool DatesAreInTheSameWeek(DateTime? date1, DateTime date2)
+        {
+            if (date1 != null)
+            {
+                DateTime date = date1.Value;
+                var cal = System.Globalization.DateTimeFormatInfo.CurrentInfo.Calendar;
+                var d1 = date.Date.AddDays(-1 * (int)cal.GetDayOfWeek(date) - 1);
+                var d2 = date2.Date.AddDays(-1 * (int)cal.GetDayOfWeek(date2) - 1);
+
+                return d1 == d2;
+            }
+            return false;
         }
 
         public async Task<IActionResult> SeriesList(string username)

@@ -98,7 +98,7 @@ namespace MyTvSeries.Web.Controllers
 
             var favourite = await _context
                 .FavoritesPersons
-                .Where(x => x.UserId == userId)
+                .Where(x => x.UserId == userId && x.PersonId == person.Id)
                 .FirstOrDefaultAsync();
 
             viewModel.IsFavourite = favourite != null;
@@ -187,7 +187,7 @@ namespace MyTvSeries.Web.Controllers
 
             var favourite = await _context
                 .FavoritesPersons
-                .Where(x => x.UserId == userId)
+                .Where(x => x.UserId == userId && x.PersonId == id)
                 .FirstOrDefaultAsync();
 
             // add to favourites

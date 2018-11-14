@@ -124,8 +124,8 @@ namespace ImportService.TheMovieDb.Converter
             foreach (var episodeJson in seasonDetailsJson.EpisodesJson)
             {
                 DateTime? airedDateValue = null;
-                if (seasonDetailsJson.AirDate.HasValue)
-                    airedDateValue = seasonDetailsJson.AirDate.Value.DateTime;
+                if (episodeJson.AirDate.HasValue)
+                    airedDateValue = episodeJson.AirDate.Value.DateTime;
 
                 var episode = new Episode
                 {

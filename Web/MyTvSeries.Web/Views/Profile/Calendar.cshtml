@@ -1,8 +1,11 @@
-﻿@model MyTvSeries.Web.Models.Profile.CalendarViewModel
+﻿@using System.ComponentModel.DataAnnotations
+@model MyTvSeries.Web.Models.Profile.CalendarViewModel
 
 @{
     ViewData["Title"] = "Calendar";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int previousWeek = Model.CurrentWeek - 1;
+    int nextWeek = Model.CurrentWeek + 1;
 }
 
 <h2>Calendar</h2>
@@ -29,72 +32,261 @@
     <div class="row" style="height: 30px"></div>
     <div class="row">
         <div class="col-md-2">
-            01.11.2018 - 08.11.2018
+            @Html.DisplayFor(model => model.StartOfWeekDate) - @Html.DisplayFor(model => model.EndOfWeekDate)
         </div>
         <div class="col-md-2">
-            <button class="btn btn-primary" type="submit">
-                <i class="fas fa-angle-left"></i>
-            </button>
-            <button class="btn btn-primary" type="submit">
-                <i class="fas fa-angle-right"></i>
-            </button>
+            <a asp-controller="Profile" asp-action="Calendar" asp-route-username="@Model.Username" asp-route-week="@previousWeek">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+            </a>
+            <a asp-controller="Profile" asp-action="Calendar" asp-route-username="@Model.Username" asp-route-week="@nextWeek">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+            </a>
         </div>
     </div>
     <div class="row" style="height: 30px"></div>
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-md-4"></div> <!-- this column empty -->
-            <div class="col-md-4">
+    <div class="row seven-cols">
+        <div class="col-md-1">
+            @if (Model.Today == DayOfWeek.Monday && Model.CurrentWeek == 0)
+            {
+                <div class="panel panel-danger">
+                    <div class="panel-heading">Monday</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Monday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
                 <div class="panel panel-primary">
                     <div class="panel-heading">Monday</div>
-                    <div class="panel-body">Body</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Monday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </div>
-            <div class="col-md-4">
-                @*                <span class="label label-primary">
-                     Tuesday
-                </span>*@
+            }
+        </div>
+        <div class="col-md-1">
+            @if (Model.Today == DayOfWeek.Tuesday && Model.CurrentWeek == 0)
+            {
+                <div class="panel panel-danger">
+                    <div class="panel-heading">Tuesday</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Tuesday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
                 <div class="panel panel-primary">
                     <div class="panel-heading">Tuesday</div>
-                    <div class="panel-body">Bootstrap Panel Body</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Tuesday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </div>
+            }
         </div>
-    </div>
-
-    <div class="col-md-8">
-        <div class="row">
-            <div class="col-md-2">
+        <div class="col-md-1">
+            @if (Model.Today == DayOfWeek.Wednesday && Model.CurrentWeek == 0)
+            {
+                <div class="panel panel-danger">
+                    <div class="panel-heading">Wednesday</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Wednesday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
                 <div class="panel panel-primary">
                     <div class="panel-heading">Wednesday</div>
-                    <div class="panel-body">Bootstrap Panel Body</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Wednesday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </div>
-            <div class="col-md-2">
+            }
+        </div>
+        <div class="col-md-1">
+            @if (Model.Today == DayOfWeek.Thursday && Model.CurrentWeek == 0)
+            {
+                <div class="panel panel-danger">
+                    <div class="panel-heading">Thursday</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Thursday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
                 <div class="panel panel-primary">
                     <div class="panel-heading">Thursday</div>
-                    <div class="panel-body">Bootstrap Panel Body</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Thursday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </div>
-            <div class="col-md-2">
+            }
+        </div>
+        <div class="col-md-1">
+            @if (Model.Today == DayOfWeek.Friday && Model.CurrentWeek == 0)
+            {
+                <div class="panel panel-danger">
+                    <div class="panel-heading">Friday</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Friday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
                 <div class="panel panel-primary">
                     <div class="panel-heading">Friday</div>
-                    <div class="panel-body">Bootstrap Panel Body</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Friday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </div>
-            <div class="col-md-2">
-                <div class="panel panel-success">
+            }
+        </div>
+        <div class="col-md-1">
+            @if (Model.Today == DayOfWeek.Saturday && Model.CurrentWeek == 0)
+            {
+                <div class="panel panel-danger">
                     <div class="panel-heading">Saturday</div>
-                    <div class="panel-body">Bootstrap Panel Body</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Saturday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </div>
-            <div class="col-md-2">
-                <div class="panel panel-success">
+            }
+            else
+            {
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Saturday</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Saturday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+
+        </div>
+        <div class="col-md-1">
+            @if (Model.Today == DayOfWeek.Sunday && Model.CurrentWeek == 0)
+            {
+                <div class="panel panel-danger">
                     <div class="panel-heading">Sunday</div>
-                    <div class="panel-body">Bootstrap Panel Body</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Sunday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </div>
-            <div class="col-md-2"></div> <!-- this column empty -->
+            }
+            else
+            {
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Sunday</div>
+                    <ul class="list-group">
+                        @foreach (var episode in Model.Sunday)
+                        {
+                            <li class="list-group-item">
+                                <div>@Html.DisplayFor(x => episode.AirTime)</div>
+                                <div style="font-size: 0.8em">@episode.SeriesName</div>
+                                <div style="font-size: 0.8em">@Html.Raw("S")@episode.SeasonNumber@Html.Raw("E")@episode.EpisodeNumber</div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
         </div>
     </div>
 </div>

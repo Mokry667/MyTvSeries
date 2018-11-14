@@ -96,6 +96,7 @@ namespace ImportService.Worker.MovieDb
         {
             if (_isInitialized)
             {
+                await GetSeasonDetailsToImport();
                 _logger.LogInformation("Start Import Series Details");
                 await ImportSeriesDetails();
                 _logger.LogInformation("Finished Import Series Details");
@@ -246,7 +247,7 @@ namespace ImportService.Worker.MovieDb
 
         private async Task ImportSeriesDetails()
         {
-            for (var index = 0; index < _importSeriesIds.Count - 1; index++)
+            for (var index = 0; index < _importSeriesIds.Count; index++)
             {
                 var seriesId = _importSeriesIds.ElementAt(index);
 
@@ -297,7 +298,7 @@ namespace ImportService.Worker.MovieDb
 
         private async Task ImportPersonsDetails()
         {
-            for (var index = 0; index < _importPersonsIds.Count - 1; index++)
+            for (var index = 0; index < _importPersonsIds.Count; index++)
             {
                 var personId = _importPersonsIds.ElementAt(index);
 
@@ -330,7 +331,7 @@ namespace ImportService.Worker.MovieDb
         // It is actually importing all episodes - seasons are already imported with series 
         private async Task ImportSeasonDetails()
         {
-            for (var index = 0; index < _importSeasonsIds.Count - 1; index++)
+            for (var index = 0; index < _importSeasonsIds.Count; index++)
             {
                 var seasonWithSeries = _importSeasonsIds.ElementAt(index);
 
@@ -360,7 +361,7 @@ namespace ImportService.Worker.MovieDb
         // import characters and crew member
         private async Task ImportSeriesCredits()
         {
-            for (var index = 0; index < _importSeriesIds.Count - 1; index++)
+            for (var index = 0; index < _importSeriesIds.Count; index++)
             {
                 var seriesId = _importSeriesIds.ElementAt(index);
 
@@ -456,7 +457,7 @@ namespace ImportService.Worker.MovieDb
 
         private async Task ImportSeriesExternalIds()
         {
-            for (var index = 0; index < _importSeriesIds.Count - 1; index++)
+            for (var index = 0; index < _importSeriesIds.Count; index++)
             {
                 var seriesId = _importSeriesIds.ElementAt(index);
 
@@ -486,7 +487,7 @@ namespace ImportService.Worker.MovieDb
             // get and set token
             await _tvDbApi.RefreshJwtToken();
 
-            for (var index = 0; index < _importSeriesIds.Count - 1; index++)
+            for (var index = 0; index < _importSeriesIds.Count; index++)
             {
                 var seriesId = _importSeriesIds.ElementAt(index);
 

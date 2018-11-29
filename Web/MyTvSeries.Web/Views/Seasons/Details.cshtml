@@ -1,0 +1,83 @@
+﻿@model MyTvSeries.Web.Models.Seasons.SeasonDetailViewModel
+@using MyTvSeries.Web.Models.Enums
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="episodesChart" style="height: 400px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <h2></h2>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-9">
+                    <h1>@Model.Name</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                    @Html.DisplayFor(model => model.Overview)
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <h2>Episodes</h2>
+            <div class="panel panel-default">
+                <ul class="list-group">
+                    @for (int i = 0; i < Model.Episodes.Count; i++)
+                    {
+                        <li class="list-group-item">
+                            <header>
+                                <h2>@Model.Episodes[i].EpisodeNumber. @Model.Episodes[i].Name</h2>
+                                <span class="text-right">
+                                    @Model.Episodes[i].Aired
+                                    @Html.DropDownListFor(x => x.Episodes[i].Rating, Html.GetEnumSelectList<EpisodeRating>(), new { onchange = "rateEpisode(this);", episodeId = @Model.Episodes[i].Id })
+                                </span>
+                            </header>
+                            <div>@Model.Episodes[i].Overview</div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-controller="Series" asp-action="Details" asp-route-id="@Model.SeriesId">
+        Back to Series
+    </a>
+</div>
+
+<script type="text/javascript">
+
+    window.onload = function () {
+        var episodesChart = new CanvasJS.Chart("episodesChart", {
+            theme: "theme2",
+            animationEnabled: true,
+            title: {
+                text: "Episodes scores"
+            },
+            axisY: {
+                includeZero: false
+            },
+            data: [
+                {
+                    type: "line", //change type to bar, line, area, pie, etc
+                    dataPoints: @Html.Raw(ViewBag.DataPointsLine)
+                }
+            ]
+        });
+        episodesChart.render();
+    };
+</script>
+

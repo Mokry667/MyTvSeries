@@ -30,6 +30,8 @@ namespace MyTvSeries.Domain.Ef
         public DbSet<FavoritesPerson> FavoritesPersons { get; set; }
         public DbSet<FavoritesSeries> FavoritesSeries { get; set; }
         public DbSet<SeriesReview> SeriesReviews { get; set; }
+        public DbSet<UserEpisode> UserEpisodes { get; set; }
+        public DbSet<UserReview> UserReviews { get; set; }
 
         public async Task<int> SaveChangesAsync()
         {
@@ -162,6 +164,26 @@ namespace MyTvSeries.Domain.Ef
             modelBuilder.Entity<SeriesReview>()
                 .HasOne(x => x.User)
                 .WithMany(x => x.SeriesReviews)
+                .HasForeignKey(x => x.UserId);
+
+            modelBuilder.Entity<UserEpisode>()
+                .HasOne(x => x.Episode)
+                .WithMany(x => x.UserEpisodes)
+                .HasForeignKey(x => x.EpisodeId);
+
+            modelBuilder.Entity<UserEpisode>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserEpisodes)
+                .HasForeignKey(x => x.UserId);
+
+            modelBuilder.Entity<UserReview>()
+                .HasOne(x => x.Review)
+                .WithMany(x => x.UserReviews)
+                .HasForeignKey(x => x.ReviewId);
+
+            modelBuilder.Entity<UserReview>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserReviews)
                 .HasForeignKey(x => x.UserId);
         }
     }

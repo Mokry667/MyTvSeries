@@ -20,6 +20,8 @@ namespace MyTvSeries.Domain.Ef
         DbSet<FavoritesPerson> FavoritesPersons { get; set; }
         DbSet<FavoritesSeries> FavoritesSeries { get; set; }
         DbSet<SeriesReview> SeriesReviews { get; set; }
+        DbSet<UserEpisode> UserEpisodes { get; set; }
+        DbSet<UserReview> UserReviews { get; set; }
         Task<int> SaveChangesAsync();
     }
 }

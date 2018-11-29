@@ -1,0 +1,54 @@
+﻿@model MyTvSeries.Web.Models.Seasons.SeasonIndexListViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Seasons</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().AiredFrom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().SeasonNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().NumberOfEpisodes)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ViewModels)
+        {
+        <tr>
+            <td>
+                <div class="col-md-6">
+                    <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+                </div>
+            </td>
+            <td>
+                <div class="col-md-6">
+                    @Html.DisplayFor(modelItem => item.AiredFrom)
+                </div>
+            </td>
+            <td>
+                <div class="col-md-6">
+                    @Html.DisplayFor(modelItem => item.SeasonNumber)
+                </div>
+            </td>
+            <td>
+                <div class="col-md-6">
+                    @Html.DisplayFor(modelItem => item.NumberOfEpisodes)
+                </div>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

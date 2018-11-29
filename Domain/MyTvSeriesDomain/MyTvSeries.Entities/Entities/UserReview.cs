@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MyTvSeries.Domain.Identity;
+﻿using MyTvSeries.Domain.Identity;
+using System;
 
 namespace MyTvSeries.Domain.Entities
 {
-    public class SeriesReview
+    public class UserReview
     {
         public long Id { get; set; }
 
-        public long? SeriesId { get; set; }
-        public virtual Series Series { get; set; }
+        public long ReviewId { get; set; }
+        public virtual SeriesReview Review { get; set; }
 
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
 
-        public virtual ICollection<UserReview> UserReviews { get; set; }
-
-        public string Content { get; set; }
-        public int Likes { get; set; }
+        public bool IsUpvoted { get; set; }
 
         public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

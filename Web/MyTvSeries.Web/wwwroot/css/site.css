@@ -111,3 +111,10 @@ body {
         width: 14.285714285714285714285714285714%;
     }
 }
+
+header {
+}
+
+    header > h2 {
+        display: inline-block;
+    }

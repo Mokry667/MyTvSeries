@@ -137,6 +137,7 @@ namespace MyTvSeries.Web.Controllers
                     var season = seasons.ElementAt(i);
                     var seasonViewModel = new SeasonSeriesDetailViewModel
                     {
+                        SeasonId = season.Id,
                         NumberOfEpisodes = season.NumberOfEpisodes,
                         SeasonName = season.Name,
                         SeasonNumber = season.SeasonNumber,

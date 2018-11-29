@@ -233,15 +233,21 @@
                     @foreach (var season in Model.SeasonSeries)
                     {
                         <li class="list-group-item">
-                            <h4>@season.SeasonName</h4>
+                            <a asp-controller="Seasons" asp-action="Details" asp-route-id="@season.SeasonId">
+                                <h4>@season.SeasonName</h4>
+                            </a>
                             Premiered @season.AiredFrom
                         </li>
-                    }
-                    @if (Model.IsMoreSeasons)
-                    {
-                        <li class="list-group-item">More seasons link</li>
-                    }
-                </ul>
+                        }
+                        @if (Model.IsMoreSeasons)
+                        {
+                        <li class="list-group-item">
+                            <a asp-controller="Seasons" asp-action="Index" asp-route-seriesId="@Model.SeriesId">
+                                More seasons
+                            </a>
+                        </li>
+                        }
+                    </ul>
             </div>
         </div>
     </div>

@@ -23,3 +23,20 @@ $('#favouriteButton').click(function () {
         isFavouriteValue.val("False");
     }
 });
+
+function rateEpisode(that) {
+    var episodeDropdownId = that.id;
+    var rating = $('#' + episodeDropdownId).val()
+
+    var ajaxData = {
+        episodeIdString: $(that).attr('episodeid'),
+        ratingString: rating
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/Seasons/RateEpisode/',
+        data: ajaxData,
+        success: function (result) { }
+    });
+}

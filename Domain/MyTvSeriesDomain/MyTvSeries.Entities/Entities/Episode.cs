@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyTvSeries.Domain.Entities
 {
@@ -11,12 +13,17 @@ namespace MyTvSeries.Domain.Entities
         public long SeasonId { get; set; }
         public virtual Season Season { get; set; }
 
+        public virtual ICollection<UserEpisode> UserEpisodes { get; set; }
+
         public string Name { get; set; }
         public string Overview { get; set; }
         public DateTime? Aired { get; set; }
         public long? SeasonEpisodeNumber { get; set; }
         public long? AbsoluteEpisodeNumber { get; set; }
         public long? SeasonNumber { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal UserRating { get; set; }
 
         public bool IsImportEnabled { get; set; }
 

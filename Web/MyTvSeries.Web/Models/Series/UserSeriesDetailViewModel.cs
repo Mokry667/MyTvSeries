@@ -59,11 +59,9 @@ namespace MyTvSeries.Web.Models.Series
         public byte[] PosterContent { get; set; }
 
         [Display(Name = "Seasons")]
-        [SeasonNumberValidator("NumberOfSeasons")]
         public int SeasonsWatched { get; set; }
 
         [Display(Name = "Episodes")]
-        [EpisodeNumberValidator("NumberOfEpisodes")]
         public int EpisodesWatched { get; set; }
 
         [Display(Name = "Seasons")]

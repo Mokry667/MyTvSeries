@@ -198,7 +198,9 @@
                 }
             </div>
             <div class="row">
-                View all cast link
+                <a asp-controller="People" asp-action="Details" asp-route-id="1">
+                    More cast members
+                </a>
             </div>
             <div class="row">
                 <h2>Crew</h2>
@@ -223,7 +225,9 @@
                 }
             </div>
             <div class="row">
-                View all crew link
+                <a asp-controller="People" asp-action="Details" asp-route-id="1">
+                    More crew members
+                </a>
             </div>
         </div>
         <div class="col-md-4">
@@ -266,22 +270,34 @@
         @foreach (var review in Model.Reviews)
         {
             <li class="list-group-item">
-                <div class="col-md-4">
-                    <p style="display: inline">
-                        <strong>Written by @review.Username</strong>
-                    </p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p style="display: inline">
+                            <strong>Written by @review.Username</strong>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="display: inline">
+                            <strong>@review.Likes people found this review helpful</strong>
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="display: inline">
+                            <strong>Rating: @review.Rating</strong>
+                        </p>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <p style="display: inline">
-                        <strong>@review.Likes people found this review helpful</strong>
-                    </p>
+                <h4></h4>
+                <div class="row">
+                    <div class="col-md-10">@review.Content</div>
+                    <div class="col-md-2">
+                        <button type="button" id="likeReview" class="btn btn-primary" data-toggle="button">
+                            <i id="favouriteIcon" class="far fa-thumbs-up">
+                            </i>
+                            <span id="favouriteButtonLabel">Upvote this review</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <p style="display: inline">
-                        <strong>Rating: @review.Rating</strong>
-                    </p>
-                </div>
-                <div>@review.Content</div>
             </li>
         }
         </ul>

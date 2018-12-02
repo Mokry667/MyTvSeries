@@ -39,18 +39,46 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="row">
+    <h4></h4>
+    <div class="col-md-12">
+        <ul class="list-group list-inline">
+            <li class="list-group-item text-center col-md-2">
                 Total entries
-            </div>
-            <div class="row">
-                Episodes
-            </div>
-            <div class="row">
+                <div>
+                    <span class="badge">@Model.TotalEntries</span>
+                </div>
+            </li>
+            <li class="list-group-item text-center col-md-2">
                 Mean score
-            </div>
-        </div>
+                <div>
+                    <span class="badge">@Model.MeanScore</span>
+                </div>
+            </li>
+            <li class="list-group-item text-center col-md-2">
+                Favorite genre
+                <div>
+                    <span class="badge">@Model.FavoriteGenre</span>
+                </div>
+            </li>
+            <li class="list-group-item text-center col-md-2">
+                Completed seasons
+                <div>
+                    <span class="badge">@Model.WatchedSeasons</span>
+                </div>
+            </li>
+            <li class="list-group-item text-center col-md-2">
+                Completed episodes
+                <div>
+                    <span class="badge">@Model.WatchedEpisodes</span>
+                </div>
+            </li>
+            <li class="list-group-item text-center col-md-2">
+                Total watch time
+                <div>
+                    <span class="badge">@Model.TotalWatchTime</span>
+                </div>
+            </li>
+        </ul>
     </div>
 </div>
 

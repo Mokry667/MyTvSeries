@@ -149,6 +149,42 @@ namespace MyTvSeries.Web.Controllers
                 }
             }
 
+            var userSeriesForUser = _context.UsersSeries
+                .Include(x => x.Series)
+                .Where(x => x.UserId == userId);
+
+            var episodesWatched = userSeriesForUser.Sum(x => x.EpisodesWatched);
+            var seasonsWatched = userSeriesForUser.Sum(x => x.SeasonsWatched);
+
+            var meanScore = Math.Round(Convert.ToDouble(userSeriesForUser.Sum(x => x.Rating)) / userSeriesForUser.Where(x => x.Rating != 0).ToList().Count, 2);
+
+            var userSeriesWithEpisodes = userSeriesForUser.Where(x => x.EpisodesWatched != 0);
+
+            int totalWatchTime = 0;
+
+            foreach(var userSeriesEpisodes in userSeriesWithEpisodes)
+            {
+                totalWatchTime += userSeriesEpisodes.EpisodesWatched * userSeriesEpisodes.Series.EpisodeRuntime;
+            }
+
+            TimeSpan watchTimeSpan = TimeSpan.FromMinutes(totalWatchTime);
+
+            string watchTime = string.Format("{0} days {1} hours {2} minutes",
+                watchTimeSpan.Days,
+                watchTimeSpan.Hours,
+                watchTimeSpan.Minutes);
+
+            viewModel.FavoriteGenre = viewModel.GenreSummary
+                .OrderByDescending(x => x.Count)
+                .FirstOrDefault()
+                .Genre.ToString();
+
+            viewModel.WatchedEpisodes = episodesWatched;
+            viewModel.WatchedSeasons = seasonsWatched;
+            viewModel.MeanScore = meanScore;
+            viewModel.TotalWatchTime = watchTime;
+            viewModel.TotalEntries = userSeriesForUser.Count();
+
             return View(viewModel);
         }
 

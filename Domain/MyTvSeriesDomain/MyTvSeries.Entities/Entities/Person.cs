@@ -14,6 +14,7 @@ namespace MyTvSeries.Domain.Entities
         public virtual ICollection<Character> Characters { get; set; }
         public virtual ICollection<Crew> Crews { get; set; }
         public virtual ICollection<FavoritesPerson> FavoritesPersons { get; set; }
+        public virtual ICollection<PersonNotification> PersonNotifications { get; set; }
 
         public string Name { get; set; } 
         public Gender Gender { get; set; }

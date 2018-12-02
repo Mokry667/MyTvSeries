@@ -25,6 +25,8 @@ namespace MyTvSeries.Domain.Entities
         [Column(TypeName = "decimal(18, 2)")]
         public decimal UserRating { get; set; }
 
+        public int UserVotes { get; set; }
+
         public bool IsImportEnabled { get; set; }
 
         public string CreatedBy { get; set; }

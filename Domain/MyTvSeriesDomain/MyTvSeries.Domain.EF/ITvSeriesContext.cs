@@ -22,6 +22,8 @@ namespace MyTvSeries.Domain.Ef
         DbSet<SeriesReview> SeriesReviews { get; set; }
         DbSet<UserEpisode> UserEpisodes { get; set; }
         DbSet<UserReview> UserReviews { get; set; }
+        DbSet<SeriesNotification> SeriesNotifications { get; set; }
+        DbSet<PersonNotification> PersonNotifications { get; set; }
         Task<int> SaveChangesAsync();
     }
 }

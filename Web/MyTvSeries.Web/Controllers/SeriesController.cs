@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyTvSeries.Domain.Ef;
 using MyTvSeries.Domain.Entities;
+using MyTvSeries.Domain.Enums;
 using MyTvSeries.Domain.Identity;
 using MyTvSeries.Web.Models.Enums;
 using MyTvSeries.Web.Models.Series;
@@ -28,16 +29,43 @@ namespace MyTvSeries.Web.Controllers
         }
 
         // GET: Series
-        public async Task<IActionResult> Index(int? page, string keyword)
+        public async Task<IActionResult> Index(int? page, string keyword, string sortBy, string ChosenGenre, string ChosenStatus)
         {
             IQueryable<Series> allSeries = null;
             if (!string.IsNullOrEmpty(keyword))
             {
-                allSeries = _context.Series.Where(x => x.Name.Contains(keyword)).AsQueryable();
+                allSeries = _context.Series
+                    .Include(x => x.SeriesGenres)
+                    .Where(x => x.Name.Contains(keyword)).AsQueryable();
             }
             else
             {
-                allSeries = _context.Series.AsQueryable();
+                allSeries = _context.Series
+                    .Include(x => x.SeriesGenres)
+                    .AsQueryable();
+            }
+
+            if (!string.IsNullOrEmpty(ChosenGenre))
+            {
+                allSeries = allSeries.Where(x => x.SeriesGenres.Any(y => y.Genre.Name == ChosenGenre));
+            }
+
+            if (!string.IsNullOrEmpty(ChosenStatus))
+            {
+                Enum.TryParse(ChosenStatus, out SeriesStatus myStatus);
+                allSeries = allSeries.Where(x => x.Status == myStatus);
+            }
+
+            switch (sortBy)
+            {
+                case "Rating":
+                    allSeries = allSeries.OrderByDescending(x => x.UserRating);
+                    break;
+                case "Name":
+                    allSeries = allSeries.OrderBy(x => x.Name);
+                    break;
+                default:
+                    break;
             }
 
             var pageNumber = page ?? 1;
@@ -65,9 +93,21 @@ namespace MyTvSeries.Web.Controllers
             var viewModelWithKeyword = new SeriesIndexSearchViewModel
             {
                 ViewModels = pagedViewModels,
-                Keyword = keyword
+                Keyword = keyword,
             };
 
+            if (!string.IsNullOrEmpty(ChosenGenre))
+            {
+                viewModelWithKeyword.ChosenGenre = ChosenGenre;
+            }
+
+            if (!string.IsNullOrEmpty(ChosenStatus))
+            {
+                viewModelWithKeyword.ChosenStatus = ChosenStatus;
+            }
+
+            viewModelWithKeyword.Genres = await _context.Genres.Select(x => x.Name).ToListAsync();
+            viewModelWithKeyword.Statuses = Enum.GetNames(typeof(SeriesStatus)).ToList();
 
             return View(viewModelWithKeyword);
         }
@@ -487,6 +527,48 @@ namespace MyTvSeries.Web.Controllers
             _context.Series.Remove(series);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public void RateReview(string reviewIdString)
+        {
+            var reviewId = Convert.ToInt64(reviewIdString);
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var userReview = _context.UserReviews
+                .Where(x => x.ReviewId == reviewId && x.UserId == userId)
+                .FirstOrDefault();
+
+            var review = _context.SeriesReviews.Where(x => x.Id == reviewId).FirstOrDefault();
+
+            if(userReview == null)
+            {
+                userReview = new UserReview()
+                {
+                    UserId = userId,
+                    ReviewId = reviewId,
+                    IsUpvoted = true,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedBy = userId,
+                };
+
+                _context.UserReviews.Add(userReview);
+
+                review.Likes++;
+                _context.SeriesReviews.Update(review);
+
+                _context.SaveChanges();
+            }
+            else
+            {
+                _context.UserReviews.Remove(userReview);
+
+                review.Likes--;
+                _context.SeriesReviews.Update(review);
+
+                _context.SaveChanges();
+            }
         }
 
         private bool SeriesExists(long id)

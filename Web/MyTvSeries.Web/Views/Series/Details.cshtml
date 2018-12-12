@@ -291,9 +291,10 @@
                 <div class="row">
                     <div class="col-md-10">@review.Content</div>
                     <div class="col-md-2">
-                        <button type="button" id="likeReview" class="btn btn-primary" data-toggle="button">
+                        <button type="button" onclick="upvoteReview(this);" id="likeReview" class="btn btn-primary" data-toggle="button">
                             <i id="favouriteIcon" class="far fa-thumbs-up">
                             </i>
+                            @Html.Hidden("reviewId", review.Id)
                             <span id="favouriteButtonLabel">Upvote this review</span>
                         </button>
                     </div>

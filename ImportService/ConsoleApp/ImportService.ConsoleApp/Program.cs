@@ -68,6 +68,7 @@ namespace ImportService.ConsoleApp
                 .AddSingleton<IMovieDbImportWorker, MovieDbImportWorker>()
                 .AddSingleton<IMovieDbMapper, MovieDbMapper>()
                 .AddSingleton<IMovieDbImportServiceDbHelper, MovieDbImportServiceDbHelper>()
+                .AddSingleton<INotificationService, NotificationService>()
 
                 .AddSingleton<ILoggerFactory, LoggerFactory>()
                 .AddSingleton(typeof(ILogger<>), typeof(Logger<>))

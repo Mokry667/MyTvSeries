@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,9 +29,11 @@ namespace MyTvSeries.Web
             services.AddDbContext<TvSeriesContext>(options => options.UseSqlServer(tvDbConnection, 
                 x => x.MigrationsAssembly("MyTvSeries.Domain.Migrations")));
 
-/*            var identityDbConnection = Configuration["identityDbConnection"];
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(identityDbConnection,
-                x => x.MigrationsAssembly("MyTvSeries.Identity.Migrations")));*/
+            /*            var identityDbConnection = Configuration["identityDbConnection"];
+                        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(identityDbConnection,
+                            x => x.MigrationsAssembly("MyTvSeries.Identity.Migrations")));*/
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<TvSeriesContext>()

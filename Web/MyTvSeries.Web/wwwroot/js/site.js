@@ -40,3 +40,63 @@ function rateEpisode(that) {
         success: function (result) { }
     });
 }
+
+function upvoteReview(that) {
+
+    var icon = $(that).find('i');
+    var buttonLabel = $(that).find('#favouriteButtonLabel');
+    var likeIcon = 'far fa-thumbs-up';
+    var unlikeIcon = 'fa fa-thumbs-up';
+
+    if (icon.hasClass(unlikeIcon)) {
+        buttonLabel.text("Upvote this review");
+        icon.removeClass(unlikeIcon);
+        icon.addClass(likeIcon);
+    }
+    else if (icon.hasClass(likeIcon)) {
+        buttonLabel.text("Remove upvote");
+        icon.removeClass(likeIcon);
+        icon.addClass(unlikeIcon);
+    }
+
+    var ajaxData = {
+        reviewIdString: $(that).find('#reviewId').val(),
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/Series/RateReview/',
+        data: ajaxData,
+        success: function (result) { }
+    });
+}
+
+$('.seriesNotification').click(function () {
+    var notificationId = this.id;
+
+    var ajaxData = {
+        notificationIdString: notificationId,
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/Home/MakeSeriesNotificationRead/',
+        data: ajaxData,
+        success: function (result) { }
+    });
+});
+
+$('.personNotification').click(function () {
+    var notificationId = this.id;
+
+    var ajaxData = {
+        notificationIdString: notificationId,
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/Home/MakePersonNotificationRead/',
+        data: ajaxData,
+        success: function (result) { }
+    });
+});

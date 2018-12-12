@@ -14,6 +14,7 @@ namespace ImportService.Worker.MovieDb
         private readonly ITvSeriesContext _tvSeriesContext;
         private readonly IMovieDbMapper _movieDbMapper;
         private readonly ILogger<IMovieDbImportServiceDbHelper> _logger;
+        private readonly INotificationService _notificationService;
 
         private readonly string _systemGuid;
 
@@ -22,12 +23,13 @@ namespace ImportService.Worker.MovieDb
         #region Ctors
 
         public MovieDbImportServiceDbHelper(ITvSeriesContext tvSeriesContext, IMovieDbMapper movieDbMapper, 
-            ILogger<IMovieDbImportServiceDbHelper> logger, IConfiguration configuration)
+            ILogger<IMovieDbImportServiceDbHelper> logger, IConfiguration configuration, INotificationService notificationService)
         {
             _tvSeriesContext = tvSeriesContext;
             _movieDbMapper = movieDbMapper;
             _logger = logger;
             _systemGuid = configuration.GetSection("System").GetSection("SystemGuid").Value;
+            _notificationService = notificationService;
         }
 
         #endregion
@@ -85,6 +87,9 @@ namespace ImportService.Worker.MovieDb
             else
             {
                 seasonFromImport = SetAuditValuesForAddSeason(seasonFromImport);
+
+                await _notificationService.CreateSeriesNotificationsForUsers(seasonFromImport);
+
                 await _tvSeriesContext.Seasons.AddAsync(seasonFromImport);
                 await _tvSeriesContext.SaveChangesAsync();
                 _logger.LogInformation("Added season with id [{0}] for series with id [{1}]", seasonFromImport.Id, seasonFromImport.SeriesId);
@@ -123,6 +128,9 @@ namespace ImportService.Worker.MovieDb
             else
             {
                 characterFromImport = SetAuditValuesForAddCharacter(characterFromImport);
+
+                await _notificationService.CreatePersonNotificationsForUsers(characterFromImport);
+
                 await _tvSeriesContext.Characters.AddAsync(characterFromImport);
                 await _tvSeriesContext.SaveChangesAsync();
                 _logger.LogInformation("Added character with id [{0}] for person with id [{1}]", characterFromImport.Id, characterFromImport.PersonId);
@@ -142,6 +150,9 @@ namespace ImportService.Worker.MovieDb
             else
             {
                 crewFromImport = SetAuditValuesForAddCharacter(crewFromImport);
+
+
+
                 await _tvSeriesContext.Crews.AddAsync(crewFromImport);
                 await _tvSeriesContext.SaveChangesAsync();
                 _logger.LogInformation("Added crew with id [{0}] for person with id [{1}]", crewFromImport.Id, crewFromImport.PersonId);

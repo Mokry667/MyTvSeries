@@ -1,0 +1,24 @@
+﻿@model MyTvSeries.Web.Models.Home.NotificationsViewModel
+
+@{
+    ViewData["Title"] = "GetNotifications";
+}
+
+@{var count = Model.SeriesNotifications.Count + Model.PersonNotifications.Count; }
+
+<div class="dropdown">
+    <button class="dropbtn">
+        <i class="fas fa-bell"> @count</i>
+    </button>
+    <div class="dropdown-content">
+        @foreach (var notification in Model.SeriesNotifications)
+        {
+            <a href="#" class="seriesNotification" id="@notification.Id">@notification.Content</a>
+        }
+        @foreach (var notification in Model.PersonNotifications)
+        {
+            <a href="#" class="personNotification" id="@notification.Id">@notification.Content</a>
+        }
+    </div>
+</div>
+

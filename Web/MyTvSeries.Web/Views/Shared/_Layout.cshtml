@@ -42,7 +42,7 @@
                             <button class="dropbtn">Industry</button>
                             <div class="dropdown-content">
                                 <a asp-area="" asp-controller="People" asp-action="Index">People</a>
-                                <a href="#">Networks</a>
+                                @*<a href="#">Networks</a>*@
                             </div>
                         </div>
                     </li>
@@ -54,9 +54,7 @@
                     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new {area = ""})" method="post" id="logoutForm" class="navbar-right">
                         <ul class="nav navbar-nav navbar-right">
                             <li>
-                                <a asp-area="Identity" asp-page="/Account/Register">
-                                    <i class="fas fa-bell"></i>
-                                </a>
+                                @Html.Action("GetNotifications", "Home")
                             </li>
                             <li>
                                 <div class="dropdown">

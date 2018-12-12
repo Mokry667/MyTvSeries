@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="input-group">
-                 <input type="text" value="@Model.Keyword" class="form-control" placeholder="Search..." name="keyword"/>
+                <input type="text" value="@Model.Keyword" class="form-control" placeholder="Search..." name="keyword" />
                 <div class="input-group-btn">
                     <button class="btn btn-primary" type="submit">
                         @*                        <span class="glyphicon glyphicon-search"></span>*@
@@ -23,6 +23,12 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-3">
+            @Html.DropDownListFor(x => x.ChosenGenre, new SelectList(Model.Genres), "Please select Genre", new { @class = "form-control" })
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownListFor(x => x.ChosenStatus, new SelectList(Model.Statuses), "Please select Status", new { @class = "form-control" })
+        </div>
     </div>
 </form>
 
@@ -30,10 +36,10 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().Name)
+            <a asp-action="Index" asp-route-keyword="@Model.Keyword" asp-route-sortBy="Name">@Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().Name)</a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().UserRating)
+            <a asp-action="Index" asp-route-keyword="@Model.Keyword" asp-route-sortBy="Rating">@Html.DisplayNameFor(model => model.ViewModels.FirstOrDefault().UserRating)</a>
         </th>
     </tr>
     </thead>

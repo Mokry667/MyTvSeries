@@ -391,15 +391,13 @@ namespace MyTvSeries.Web.Controllers
                 {
                     userSeries.WatchStatus = viewModel.WatchStatus;
                     userSeries.Rating = (int) viewModel.SeriesRating;
-                    userSeries.EpisodesWatched = viewModel.EpisodesWatched;
-                    userSeries.SeasonsWatched = viewModel.SeasonsWatched;
 
                     series = await _context.Series
                         .Include(x => x.SeriesGenres)
                         .ThenInclude(x => x.Genre)
                         .FirstOrDefaultAsync(x => x.Id == viewModel.SeriesId);
 
-                    if (userSeries.Rating != 0)
+                    if (userSeries.Rating != 0 && series.UserVotes != 0)
                     {
                         var seriesRating = series.SeriesUsers.Sum(x => x.Rating);
                         series.UserRating = (decimal)seriesRating / series.UserVotes;

@@ -67,7 +67,7 @@
                             <div class="form-group">
                                 <label asp-for="EpisodesWatched" class="control-label"></label>
                                 <div class="input-group">
-                                    <input asp-for="EpisodesWatched" class="form-control">
+                                    <input asp-for="EpisodesWatched" disabled="disabled" class="form-control">
                                     <span class="input-group-addon">
                                         / @Model.NumberOfEpisodes
                                     </span>
@@ -79,7 +79,7 @@
                             <div class="form-group">
                                 <label asp-for="SeasonsWatched" class="control-label"></label>
                                 <div class="input-group">
-                                    <input asp-for="SeasonsWatched" class="form-control" />
+                                    <input asp-for="SeasonsWatched" disabled="disabled" class="form-control" />
                                     <span class="input-group-addon">
                                         / @Model.NumberOfSeasons
                                     </span>

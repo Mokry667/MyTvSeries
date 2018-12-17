@@ -142,16 +142,25 @@ namespace MyTvSeries.Web.Controllers
         }
 
         [HttpPost]
-        public void RateEpisode(string episodeIdString, string ratingString)
+        public void RateEpisode(string episodeIdString, string ratingString, string seriesIdString, string seasonIdString)
         {
             var episodeId = Convert.ToInt64(episodeIdString);
             var rating = Convert.ToInt32(ratingString);
+            var seriesId = Convert.ToInt64(seriesIdString);
+            var seasonId = Convert.ToInt64(seasonIdString);
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var userEpisode = _context.UserEpisodes
                 .Where(x => x.EpisodeId == episodeId && x.UserId == userId)
                 .FirstOrDefault();
+
+            var oldEpisodesWatched = _context.UserEpisodes
+                .Include(x => x.Episode)
+                .ThenInclude(x => x.Season)
+                .Where(x => x.Episode.Season.SeriesId == seriesId);
+
+            var oldSeasonEpisodeWatchedCount = oldEpisodesWatched.Where(x => x.Episode.SeasonId == seasonId).Count();
 
             if (userEpisode == null)
             {
@@ -185,8 +194,40 @@ namespace MyTvSeries.Web.Controllers
 
             var newRating = (decimal)ratingSum / numberOfVotes;
             episode.UserRating = newRating;
+
             _context.Update(episode);
             _context.SaveChanges();
+
+            var episodesWatched = _context.UserEpisodes
+                .Include(x => x.Episode)
+                .ThenInclude(x => x.Season)
+                .Where(x => x.Episode.Season.SeriesId == seriesId);
+
+            var episodesCount = episodesWatched.Count();
+            var seasonEpisodeWatchedCount = episodesWatched.Where(x => x.Episode.SeasonId == seasonId).Count();
+            var seasonEpisodesCount = episodesWatched.FirstOrDefault().Episode.Season.NumberOfEpisodes;
+
+            bool isFullSeasonWatched = false;
+            if (seasonEpisodesCount.HasValue)
+            {
+                isFullSeasonWatched = seasonEpisodeWatchedCount >= seasonEpisodesCount.Value 
+                    && oldSeasonEpisodeWatchedCount != seasonEpisodeWatchedCount;
+            }
+
+            var userSeries = _context.UsersSeries
+                .Where(x => x.SeriesId == seriesId && x.UserId == userId)
+                .FirstOrDefault();
+
+            if(userSeries != null)
+            {
+                userSeries.EpisodesWatched = episodesCount;
+                if (isFullSeasonWatched)
+                {
+                    userSeries.SeasonsWatched++;
+                }
+                _context.Update(userSeries);
+                _context.SaveChanges();
+            }
         }
 
 

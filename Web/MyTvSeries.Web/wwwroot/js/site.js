@@ -26,11 +26,15 @@ $('#favouriteButton').click(function () {
 
 function rateEpisode(that) {
     var episodeDropdownId = that.id;
-    var rating = $('#' + episodeDropdownId).val()
+    var rating = $('#' + episodeDropdownId).val();
+    var seriesId = $('#SeriesId').val();
+    var seasonId = $('#Id').val();
 
     var ajaxData = {
         episodeIdString: $(that).attr('episodeid'),
-        ratingString: rating
+        ratingString: rating,
+        seriesIdString: seriesId,
+        seasonIdString: seasonId
     };
 
     $.ajax({

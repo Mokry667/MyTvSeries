@@ -1,0 +1,61 @@
+﻿@model MyTvSeries.Web.Models.Profile.ReviewsViewModel
+
+@{
+    ViewData["Title"] = "ReviewList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Reviews</h2>
+
+<ul class="nav nav-tabs nav-justified">
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="Index" asp-route-username="@Model.Username">Overview</a>
+    </li>
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="Calendar" asp-route-username="@Model.Username">Calendar</a>
+    </li>
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="SeriesList" asp-route-username="@Model.Username">Series List</a>
+    </li>
+    <li role="presentation">
+        <a asp-area="" asp-controller="Profile" asp-action="Favourites" asp-route-username="@Model.Username">Favourites</a>
+    </li>
+    <li role="presentation">
+        <a href="#">Reviews</a>
+    </li>
+</ul>
+
+<div class="container-fluid">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    SeriesName
+                </th>
+                <th>
+                    Upvotes
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var review in Model.Reviews)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="SeriesReviews" asp-action="Edit" asp-route-id="@review.Id">@Html.DisplayFor(modelItem => review.Id)</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => review.SeriesName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => review.Likes)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

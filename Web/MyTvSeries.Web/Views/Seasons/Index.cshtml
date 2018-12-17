@@ -7,6 +7,15 @@
 
 <h2>Seasons</h2>
 
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="seasonsChart" style="height: 400px;">
+            </div>
+        </div>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -52,3 +61,28 @@
         }
     </tbody>
 </table>
+
+<script type="text/javascript">
+
+    window.onload = function () {
+        var seasonsChart = new CanvasJS.Chart("seasonsChart", {
+            theme: "theme2",
+            animationEnabled: true,
+            title: {
+                text: "Season scores"
+            },
+            axisY: {
+                includeZero: false,
+                maximum: 10,
+                minimum: 1
+            },
+            data: [
+                {
+                    type: "line", //change type to bar, line, area, pie, etc
+                    dataPoints: @Html.Raw(ViewBag.DataPointsLine)
+                }
+            ]
+        });
+        seasonsChart.render();
+    };
+</script>

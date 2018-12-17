@@ -394,6 +394,35 @@ namespace MyTvSeries.Web.Controllers
             return View(viewModel);
         }
 
+        public async Task<IActionResult> ReviewList(string username)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var reviews = await _context.SeriesReviews
+                .Include(x => x.Series)
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+
+            var viewModel = new ReviewsViewModel();
+
+            viewModel.Username = username;
+            viewModel.Reviews = new List<ReviewOnListViewModel>();
+
+            foreach(var review in reviews)
+            {
+                var reviewViewModel = new ReviewOnListViewModel
+                {
+                    Id = review.Id,
+                    SeriesName = review.Series.Name,
+                    Likes = review.Likes
+                };
+
+                viewModel.Reviews.Add(reviewViewModel);
+            }
+
+            return View(viewModel);
+        }
+
         private SeriesOnListWithWatchStatusViewModel ToSeriesOnList(IEnumerable<UserSeries> userSeries, string watchStatus)
         {
 

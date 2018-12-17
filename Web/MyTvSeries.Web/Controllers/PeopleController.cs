@@ -22,16 +22,34 @@ namespace MyTvSeries.Web.Controllers
         }
 
         // GET: People
-        public async Task<IActionResult> Index(int? page, string keyword)
+        public async Task<IActionResult> Index(int? page, string keyword, int? characterSeriesId, int? crewSeriesId)
         {
             IQueryable<Person> allPersons = null;
             if (!string.IsNullOrEmpty(keyword))
             {
-                allPersons = _context.Persons.Where(x => x.Name.Contains(keyword)).AsQueryable();
+                allPersons = _context.Persons
+                    .Include(x => x.Crews)
+                    .Include(x => x.Characters)
+                    .ThenInclude(x => x.SeriesCharacters)
+                    .Where(x => x.Name.Contains(keyword)).AsQueryable();
             }
             else
             {
-                allPersons = _context.Persons.AsQueryable();
+                allPersons = _context.Persons
+                    .Include(x => x.Crews)
+                    .Include(x => x.Characters)
+                    .ThenInclude(x => x.SeriesCharacters)
+                    .AsQueryable();
+            }
+
+            if (characterSeriesId != null)
+            {
+                allPersons = allPersons.Where(x => x.Characters.Any(y => y.SeriesCharacters.Any(z => z.SeriesId == characterSeriesId)));
+            }
+
+            if (crewSeriesId != null)
+            {
+                allPersons = allPersons.Where(x => x.Crews.Any(y => y.SeriesId == crewSeriesId));
             }
 
             var pageNumber = page ?? 1;

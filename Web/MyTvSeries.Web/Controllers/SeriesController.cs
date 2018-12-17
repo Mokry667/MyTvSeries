@@ -120,10 +120,13 @@ namespace MyTvSeries.Web.Controllers
                 return NotFound();
             }
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var series = await _context.Series.Include(x => x.Seasons)
                 .Include(x => x.SeriesCharacters)
                 .Include(x => x.Crews)
                 .Include(x => x.SeriesReviews)
+                .ThenInclude(x => x.UserReviews)
                 .Include(x => x.SeriesGenres)
                 .ThenInclude(x => x.Genre)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -219,6 +222,8 @@ namespace MyTvSeries.Web.Controllers
                     break;
             }
 
+            viewModel.IsMoreCast = series.SeriesCharacters.Count > viewModel.Cast.Count;
+
             // Crew
 
             for (int i = 0; i < 4; i++)
@@ -244,6 +249,8 @@ namespace MyTvSeries.Web.Controllers
                 else
                     break;
             }
+
+            viewModel.IsMoreCrew = series.Crews.Count > viewModel.Crew.Count;
 
             // REVIEWS
 
@@ -278,13 +285,13 @@ namespace MyTvSeries.Web.Controllers
                         reviewViewModel.Rating = userRating.Rating;
                     }
 
+                    reviewViewModel.IsRated = review.UserReviews.Where(x => x.UserId == userId).Any();
+
                     viewModel.Reviews.Add(reviewViewModel);
                 }
                 else
                     break;
             }
-
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             
 
             if (userId != null)

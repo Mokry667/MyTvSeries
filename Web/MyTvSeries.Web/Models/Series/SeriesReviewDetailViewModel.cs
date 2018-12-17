@@ -20,5 +20,7 @@ namespace MyTvSeries.Web.Models.Series
         public DateTime WrittenOn { get; set; }
 
         public int Likes { get; set; }
+
+        public bool IsRated { get; set; }
     }
 }

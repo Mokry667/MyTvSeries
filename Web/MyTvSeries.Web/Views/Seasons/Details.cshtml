@@ -1,4 +1,8 @@
-﻿@model MyTvSeries.Web.Models.Seasons.SeasonDetailViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@using MyTvSeries.Domain.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model MyTvSeries.Web.Models.Seasons.SeasonDetailViewModel
 @using MyTvSeries.Web.Models.Enums
 
 @{
@@ -41,7 +45,10 @@
                                 <h2>@Model.Episodes[i].EpisodeNumber. @Model.Episodes[i].Name</h2>
                                 <span class="text-right">
                                     @Model.Episodes[i].Aired
-                                    @Html.DropDownListFor(x => x.Episodes[i].Rating, Html.GetEnumSelectList<EpisodeRating>(), new { onchange = "rateEpisode(this);", episodeId = @Model.Episodes[i].Id })
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        @Html.DropDownListFor(x => x.Episodes[i].Rating, Html.GetEnumSelectList<EpisodeRating>(), new { onchange = "rateEpisode(this);", episodeId = @Model.Episodes[i].Id })
+                                    }
                                 </span>
                             </header>
                             <div>@Model.Episodes[i].Overview</div>
@@ -68,7 +75,9 @@
                 text: "Episodes scores"
             },
             axisY: {
-                includeZero: false
+                includeZero: false,
+                maximum: 10,
+                minimum: 1
             },
             data: [
                 {

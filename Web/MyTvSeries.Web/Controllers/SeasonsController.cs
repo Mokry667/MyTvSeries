@@ -28,6 +28,7 @@ namespace MyTvSeries.Web.Controllers
         public async Task<IActionResult> Index(long? seriesId)
         {
             var seasons = await _context.Seasons.Include(s => s.Series)
+                .Include(s => s.Episodes)
                 .Where(x => x.SeriesId == seriesId)
                 .ToListAsync();
 
@@ -36,6 +37,8 @@ namespace MyTvSeries.Web.Controllers
                 SeriesId = seriesId,
                 ViewModels = new List<SeasonIndexViewModel>()
             };
+
+            List<DataPointLine> LineChartDataPoints = new List<DataPointLine>();
 
             foreach (var season in seasons)
             {
@@ -51,7 +54,16 @@ namespace MyTvSeries.Web.Controllers
                     seasonViewModel.AiredFrom = season.AiredFrom.Value.ToString("dd MMMM yyyy");
 
                 viewModel.ViewModels.Add(seasonViewModel);
+
+
+                var meanRating = season.Episodes.Sum(x => x.UserRating) / season.Episodes.Count();
+
+                var dataPoint = new DataPointLine(Convert.ToDouble(meanRating), "S" + season.SeasonNumber.ToString());
+                LineChartDataPoints.Add(dataPoint);
+
             }
+
+            ViewBag.DataPointsLine = JsonConvert.SerializeObject(LineChartDataPoints);
 
             return View(viewModel);
         }

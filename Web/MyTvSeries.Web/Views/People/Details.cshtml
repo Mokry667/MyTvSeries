@@ -1,4 +1,8 @@
-﻿@model MyTvSeries.Web.Models.People.PersonDetailViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@using MyTvSeries.Domain.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@model MyTvSeries.Web.Models.People.PersonDetailViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,13 +15,13 @@
         @if (Model.PosterContent != null)
         {
             <div class="col-md-3">
-                <img src="data:image;base64,@System.Convert.ToBase64String(Model.PosterContent)" alt="~/images/no-image-available.png" class="img-responsive pull-left" width="240" height="240"/>
+                <img src="data:image;base64,@System.Convert.ToBase64String(Model.PosterContent)" alt="~/images/no-image-available.png" class="img-responsive pull-left" width="240" height="240" />
             </div>
         }
         else
         {
             <div class="col-md-3">
-                <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="320"/>
+                <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="320" />
             </div>
         }
         <div class="col-md-9">
@@ -35,24 +39,27 @@
             <h2></h2>
             <div class="row">
                 <div class="form-group">
-                    <form asp-action="AddOrRemoveFromFavourites">
-                        <button type="submit" class="btn btn-primary">
-                            @if (Model.IsFavourite)
-                            {
-                                <i id="favouriteIcon" class="fas fa-star">
-                                </i>
-                                <span id="favouriteButtonLabel">Remove from favourites</span>
-                            }
-                            else
-                            {
-                                <i id="favouriteIcon" class="far fa-star">
-                                </i>
-                                <span id="favouriteButtonLabel">Add to favourites</span>
-                            }
-                        </button>
-                        <input type="hidden" name="id" value="@Model.PersonId" />
-                    </form>
-                </div>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <form asp-action="AddOrRemoveFromFavourites">
+                            <button type="submit" class="btn btn-primary">
+                                @if (Model.IsFavourite)
+                                {
+                                    <i id="favouriteIcon" class="fas fa-star">
+                                    </i>
+                                    <span id="favouriteButtonLabel">Remove from favourites</span>
+                                }
+                                else
+                                {
+                                    <i id="favouriteIcon" class="far fa-star">
+                                    </i>
+                                    <span id="favouriteButtonLabel">Add to favourites</span>
+                                }
+                            </button>
+                            <input type="hidden" name="id" value="@Model.PersonId" />
+                        </form>
+                    }
+                    </div>
             </div>
         </div>
     </div>
@@ -91,20 +98,20 @@
                 <thead>
                 </thead>
                 <tbody>
-                @foreach (var cast in Model.Cast)
-                {
-                    <tr>
-                        <td>
-                            @cast.Year
-                        </td>
-                        <td>
-                            In <a asp-controller="Series" asp-action="Details" asp-route-id="@cast.SeriesId">@cast.SeriesName</a> as @cast.CharacterName
-                        </td>
-                        <td>
-                            <i class="fas fa-star" style="color: yellow"></i> @cast.SeriesRating
-                        </td>
-                    </tr>
-                }
+                    @foreach (var cast in Model.Cast)
+                    {
+                        <tr>
+                            <td>
+                                @cast.Year
+                            </td>
+                            <td>
+                                In <a asp-controller="Series" asp-action="Details" asp-route-id="@cast.SeriesId">@cast.SeriesName</a> as @cast.CharacterName
+                            </td>
+                            <td>
+                                <i class="fas fa-star" style="color: yellow"></i> @cast.SeriesRating
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         }
@@ -113,29 +120,29 @@
         @if (Model.Departments.Count > 0)
         {
             foreach (var department in Model.Departments)
-             {
-                 <h2>@department.DepartmentName</h2>
-                 <table class="table table-bordered">
-                     <thead>
-                     </thead>
-                     <tbody>
-                     @foreach (var crew in department.Crew)
-                     {
-                         <tr>
-                             <td>
-                                 @crew.Year
-                             </td>
-                             <td>
-                                 In <a asp-controller="Series" asp-action="Details" asp-route-id="@crew.SeriesId">@crew.SeriesName</a> as @crew.Job
-                             </td>
-                             <td>
-                                 <i class="fas fa-star" style="color: yellow"></i> @crew.SeriesRating
-                             </td>
-                         </tr>
-                     }
-                     </tbody>
-                 </table>
-             }
+            {
+                <h2>@department.DepartmentName</h2>
+                <table class="table table-bordered">
+                    <thead>
+                    </thead>
+                    <tbody>
+                        @foreach (var crew in department.Crew)
+                        {
+                            <tr>
+                                <td>
+                                    @crew.Year
+                                </td>
+                                <td>
+                                    In <a asp-controller="Series" asp-action="Details" asp-route-id="@crew.SeriesId">@crew.SeriesName</a> as @crew.Job
+                                </td>
+                                <td>
+                                    <i class="fas fa-star" style="color: yellow"></i> @crew.SeriesRating
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
         }
     </div>
 </div>

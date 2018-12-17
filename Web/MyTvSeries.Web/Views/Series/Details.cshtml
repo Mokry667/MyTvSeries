@@ -2,6 +2,10 @@
 @using MyTvSeries.Domain.Enums
 @using MyTvSeries.Web.Models.Enums
 @using MyTvSeries.Web.Models.Series
+@using Microsoft.AspNetCore.Identity
+@using MyTvSeries.Domain.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @model MyTvSeries.Web.Models.Series.UserSeriesDetailViewModel
 
 @{
@@ -15,13 +19,13 @@
         @if (Model.PosterContent != null)
         {
             <div class="col-md-3">
-                <img src="data:image;base64,@System.Convert.ToBase64String(Model.PosterContent)" alt="~/images/no-image-available.png" class="img-responsive pull-left" width="240" height="240"/>
+                <img src="data:image;base64,@System.Convert.ToBase64String(Model.PosterContent)" alt="~/images/no-image-available.png" class="img-responsive pull-left" width="240" height="240" />
             </div>
         }
         else
         {
             <div class="col-md-3">
-                <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="320"/>
+                <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="320" />
             </div>
         }
         <div class="col-md-9">
@@ -55,75 +59,78 @@
                     <p>@Html.DisplayFor(model => model.Overview)</p>
                 </div>
             </div>
-        <form asp-action="Details">
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label asp-for="EpisodesWatched" class="control-label"></label>
-                        <div class="input-group">
-                            <input asp-for="EpisodesWatched" class="form-control">
-                            <span class="input-group-addon">
-                                / @Model.NumberOfEpisodes
-                            </span>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <form asp-action="Details">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label asp-for="EpisodesWatched" class="control-label"></label>
+                                <div class="input-group">
+                                    <input asp-for="EpisodesWatched" class="form-control">
+                                    <span class="input-group-addon">
+                                        / @Model.NumberOfEpisodes
+                                    </span>
+                                </div>
+                                <span asp-validation-for="EpisodesWatched" class="text-danger"></span>
+                            </div>
                         </div>
-                        <span asp-validation-for="EpisodesWatched" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label asp-for="SeasonsWatched" class="control-label"></label>
-                        <div class="input-group">
-                            <input asp-for="SeasonsWatched" class="form-control"/>
-                            <span class="input-group-addon">
-                                / @Model.NumberOfSeasons
-                            </span>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label asp-for="SeasonsWatched" class="control-label"></label>
+                                <div class="input-group">
+                                    <input asp-for="SeasonsWatched" class="form-control" />
+                                    <span class="input-group-addon">
+                                        / @Model.NumberOfSeasons
+                                    </span>
+                                </div>
+                                <span asp-validation-for="SeasonsWatched" class="text-danger"></span>
+                            </div>
                         </div>
-                        <span asp-validation-for="SeasonsWatched" class="text-danger"></span>
+                        <div class="col-md-2">
+                            <label asp-for="IsFavourite" class="control-label"></label>
+                            <div class="form-group">
+                                <button type="button" id="favouriteButton" class="btn btn-primary" data-toggle="button">
+                                    @if (Model.IsFavourite)
+                                    {
+                                        <i id="favouriteIcon" class="fas fa-star">
+                                        </i>
+                                        <span id="favouriteButtonLabel">Remove from favourites</span>
+                                    }
+                                    else
+                                    {
+                                        <i id="favouriteIcon" class="far fa-star">
+                                        </i>
+                                        <span id="favouriteButtonLabel">Add to favourites</span>
+                                    }
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-2">
-                    <label asp-for="IsFavourite" class="control-label"></label>
-                    <div class="form-group">
-                        <button type="button" id="favouriteButton" class="btn btn-primary" data-toggle="button">
-                            @if (Model.IsFavourite)
-                            {
-                                <i id="favouriteIcon" class="fas fa-star">
-                                </i>
-                                <span id="favouriteButtonLabel">Remove from favourites</span>
-                            }
-                            else
-                            {
-                                <i id="favouriteIcon" class="far fa-star">
-                                </i>
-                                <span id="favouriteButtonLabel">Add to favourites</span>
-                            }
-                        </button>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <select asp-for="WatchStatus" asp-items="Html.GetEnumSelectList<WatchStatus>()" class="form-control"></select>
+                                <span asp-validation-for="WatchStatus" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <select asp-for="SeriesRating" asp-items="Html.GetEnumSelectList<SeriesRating>()" class="form-control"></select>
+                                <span asp-validation-for="SeriesRating" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <input type="submit" value="Save" class="btn btn-default pull-left" />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <select asp-for="WatchStatus" asp-items="Html.GetEnumSelectList<WatchStatus>()" class="form-control"></select>
-                        <span asp-validation-for="WatchStatus" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <select asp-for="SeriesRating" asp-items="Html.GetEnumSelectList<SeriesRating>()" class="form-control"></select>
-                        <span asp-validation-for="SeriesRating" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <input type="submit" value="Save" class="btn btn-default pull-left"/>
-                    </div>
-                </div>
-            </div>
-            <input asp-for="IsFavourite" type="hidden"/>
-            <input asp-for="SeriesId" type="hidden"/>
-        </form>
-    </div>
+                    <input asp-for="IsFavourite" type="hidden" />
+                    <input asp-for="SeriesId" type="hidden" />
+                </form>
+            }
+        </div>
         <div class="row">
             <div class="col-md-3 text-left">
                 <strong>@Html.DisplayNameFor(model => model.Status):</strong>
@@ -173,134 +180,154 @@
                 }
             </div>
         </div>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="row">
-                <h2>Cast</h2>
-                @foreach (var cast in Model.Cast)
-                {
-                <div class="col-md-3">
-                    @if (cast.Picture != null)
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <h2>Cast</h2>
+                    @foreach (var cast in Model.Cast)
                     {
-                        <a asp-controller="People" asp-action="Details" asp-route-id="@cast.PersonId">
-                            <img src="data:image;base64,@System.Convert.ToBase64String(cast.Picture)" alt="~/images/no-image-available.png" class="img-responsive" width="120" height="20" />
-                        </a>
+                        <div class="col-md-3">
+                            @if (cast.Picture != null)
+                            {
+                                <a asp-controller="People" asp-action="Details" asp-route-id="@cast.PersonId">
+                                    <img src="data:image;base64,@System.Convert.ToBase64String(cast.Picture)" alt="~/images/no-image-available.png" class="img-responsive" width="120" height="20" />
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="People" asp-action="Details" asp-route-id="@cast.PersonId">
+                                    <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="160" />
+                                </a>
+                            }
+                            <strong><a asp-controller="People" asp-action="Details" asp-route-id="@cast.PersonId">@cast.Name</a></strong>
+                            <p>@cast.Character</p>
+                        </div>
                     }
-                    else
-                    {
-                        <a asp-controller="People" asp-action="Details" asp-route-id="@cast.PersonId">
-                            <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="160" />
-                        </a>
-                    }
-                    <strong><a asp-controller="People" asp-action="Details" asp-route-id="@cast.PersonId">@cast.Name</a></strong>
-                    <p>@cast.Character</p>
                 </div>
+                <div class="row">
+                    @if (Model.IsMoreCast)
+                    {
+                        <a asp-controller="People" asp-action="Index" asp-route-characterSeriesId="@Model.SeriesId">
+                            More cast members
+                        </a>
+                    }
+                </div>
+                <div class="row">
+                    <h2>Crew</h2>
+                    @foreach (var crew in Model.Crew)
+                    {
+                        <div class="col-md-3">
+                            @if (crew.Picture != null)
+                            {
+                                <a asp-controller="People" asp-action="Details" asp-route-id="@crew.PersonId">
+                                    <img src="data:image;base64,@System.Convert.ToBase64String(crew.Picture)" alt="~/images/no-image-available.png" class="img-responsive" width="120" height="20" />
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="People" asp-action="Details" asp-route-id="@crew.PersonId">
+                                    <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="160" />
+                                </a>
+                            }
+                            <strong><a asp-controller="People" asp-action="Details" asp-route-id="@crew.PersonId">@crew.Name</a></strong>
+                            <p>@crew.Job</p>
+                        </div>
+                    }
+                </div>
+                @if (Model.IsMoreCrew)
+                {
+                    <div class="row">
+                        <a asp-controller="People" asp-action="Index" asp-route-crewSeriesId="@Model.SeriesId">
+                            More crew members
+                        </a>
+                    </div>
                 }
             </div>
-            <div class="row">
-                <a asp-controller="People" asp-action="Details" asp-route-id="1">
-                    More cast members
-                </a>
-            </div>
-            <div class="row">
-                <h2>Crew</h2>
-                @foreach (var crew in Model.Crew)
-                {
-                <div class="col-md-3">
-                    @if (crew.Picture != null)
-                    {
-                        <a asp-controller="People" asp-action="Details" asp-route-id="@crew.PersonId">
-                            <img src="data:image;base64,@System.Convert.ToBase64String(crew.Picture)" alt="~/images/no-image-available.png" class="img-responsive" width="120" height="20" />
-                        </a>
-                    }
-                    else
-                    {
-                        <a asp-controller="People" asp-action="Details" asp-route-id="@crew.PersonId">
-                            <img src="~/images/no-image-available.png" class="img-responsive pull-left" width="320" height="160" />
-                        </a>
-                    }
-                    <strong><a asp-controller="People" asp-action="Details" asp-route-id="@crew.PersonId">@crew.Name</a></strong>
-                    <p>@crew.Job</p>
-                </div>
-                }
-            </div>
-            <div class="row">
-                <a asp-controller="People" asp-action="Details" asp-route-id="1">
-                    More crew members
-                </a>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <h2>Seasons</h2>
-            <div class="panel panel-default">
-                <ul class="list-group">
-                    @foreach (var season in Model.SeasonSeries)
-                    {
-                        <li class="list-group-item">
-                            <a asp-controller="Seasons" asp-action="Details" asp-route-id="@season.SeasonId">
-                                <h4>@season.SeasonName</h4>
-                            </a>
-                            Premiered @season.AiredFrom
-                        </li>
+            <div class="col-md-4">
+                <h2>Seasons</h2>
+                <div class="panel panel-default">
+                    <ul class="list-group">
+                        @foreach (var season in Model.SeasonSeries)
+                        {
+                            <li class="list-group-item">
+                                <a asp-controller="Seasons" asp-action="Details" asp-route-id="@season.SeasonId">
+                                    <h4>@season.SeasonName</h4>
+                                </a>
+                                Premiered @season.AiredFrom
+                            </li>
                         }
                         @if (Model.IsMoreSeasons)
                         {
-                        <li class="list-group-item">
-                            <a asp-controller="Seasons" asp-action="Index" asp-route-seriesId="@Model.SeriesId">
-                                More seasons
-                            </a>
-                        </li>
+                            <li class="list-group-item">
+                                <a asp-controller="Seasons" asp-action="Index" asp-route-seriesId="@Model.SeriesId">
+                                    More seasons
+                                </a>
+                            </li>
                         }
                     </ul>
+                </div>
             </div>
         </div>
-    </div>
-        <div class="row"> 
+        <div class="row">
             <h2>Reviews</h2>
         </div>
-        @if (!Model.IsReviewWritten)
+        @if (SignInManager.IsSignedIn(User))
         {
-            <a asp-controller="SeriesReviews" asp-action="Create" asp-route-seriesId="@Model.SeriesId">Write Review</a>
-        }
-        else
-        {
-            <a asp-controller="SeriesReviews" asp-action="Details" asp-route-id="@Model.ReviewId">Edit Review</a>   
+            @if (!Model.IsReviewWritten)
+            {
+                <a asp-controller="SeriesReviews" asp-action="Create" asp-route-seriesId="@Model.SeriesId">Write Review</a>
+            }
+            else
+            {
+                <a asp-controller="SeriesReviews" asp-action="Edit" asp-route-id="@Model.ReviewId">Edit Review</a>
+            }
         }
         <ul class="list-group">
-        @foreach (var review in Model.Reviews)
-        {
-            <li class="list-group-item">
-                <div class="row">
-                    <div class="col-md-4">
-                        <p style="display: inline">
-                            <strong>Written by @review.Username</strong>
-                        </p>
+            @foreach (var review in Model.Reviews)
+            {
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p style="display: inline">
+                                <strong>Written by @review.Username</strong>
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <p style="display: inline">
+                                <strong>@review.Likes people found this review helpful</strong>
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <p style="display: inline">
+                                <strong>Rating: @review.Rating</strong>
+                            </p>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <p style="display: inline">
-                            <strong>@review.Likes people found this review helpful</strong>
-                        </p>
+                    <h4></h4>
+                    <div class="row">
+                        <div class="col-md-10">@review.Content</div>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="col-md-2">
+                                <button type="button" onclick="upvoteReview(this);" id="likeReview" class="btn btn-primary" data-toggle="button">
+                                    @if (review.IsRated)
+                                    {
+                                        <i id="favouriteIcon" class="fa fa-thumbs-up"></i>
+                                        @Html.Hidden("reviewId", review.Id)
+                                        <span id="favouriteButtonLabel">Remove upvote</span>
+                                    }
+                                    else
+                                    {
+                                        <i id="favouriteIcon" class="far fa-thumbs-up"></i>
+                                        @Html.Hidden("reviewId", review.Id)
+                                        <span id="favouriteButtonLabel">Upvote this review</span>
+                                    }
+                                </button>
+                            </div>
+                        }
                     </div>
-                    <div class="col-md-4">
-                        <p style="display: inline">
-                            <strong>Rating: @review.Rating</strong>
-                        </p>
-                    </div>
-                </div>
-                <h4></h4>
-                <div class="row">
-                    <div class="col-md-10">@review.Content</div>
-                    <div class="col-md-2">
-                        <button type="button" onclick="upvoteReview(this);" id="likeReview" class="btn btn-primary" data-toggle="button">
-                            <i id="favouriteIcon" class="far fa-thumbs-up">
-                            </i>
-                            @Html.Hidden("reviewId", review.Id)
-                            <span id="favouriteButtonLabel">Upvote this review</span>
-                        </button>
-                    </div>
-                </div>
-            </li>
-        }
+                </li>
+            }
         </ul>
     </div>
 </div>

@@ -115,11 +115,14 @@ namespace MyTvSeries.Web.Controllers
                 return NotFound();
             }
 
+            var seriesReviewDb = await _context.SeriesReviews.FindAsync(id);
+            seriesReviewDb.Content = seriesReview.Content;
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(seriesReview);
+                    _context.Update(seriesReviewDb);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -133,11 +136,12 @@ namespace MyTvSeries.Web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Series", new { id = seriesReviewDb.SeriesId });
             }
             ViewData["SeriesId"] = new SelectList(_context.Series, "Id", "Id", seriesReview.SeriesId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", seriesReview.UserId);
-            return View(seriesReview);
+            return RedirectToAction("Details", "Series", new { id = seriesReviewDb.SeriesId });
+            //return View(seriesReview);
         }
 
         // GET: SeriesReviews/Delete/5

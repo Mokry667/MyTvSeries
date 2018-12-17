@@ -84,5 +84,8 @@ namespace MyTvSeries.Web.Models.Series
 
         public bool IsMoreSeasons { get; set; }
 
+        public bool IsMoreCast { get; set; }
+        public bool IsMoreCrew { get; set; }
+
     }
 }

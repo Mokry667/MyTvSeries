@@ -12,9 +12,9 @@ namespace ImportService.TheTvDbTest
         [InlineData("Terry O'Quinn", "Terry", "O'Quinn")]
         public void ShouldSeparateIntoFirstNameAndLastName(string name, params string[] expectedNames)
         {
-            var splitedNames = SeparateName(name);
+            var splitNames = SeparateName(name);
 
-            Assert.Equal(expectedNames, splitedNames);
+            Assert.Equal(expectedNames, splitNames);
         }
 
         [Theory]
@@ -23,21 +23,21 @@ namespace ImportService.TheTvDbTest
         [InlineData("M.C. Gainey", "M.", "C.", "Gainey")]
         public void ShouldSeparateIntoFirstNameAndMiddleNameAndLastName(string name, params string[] expectedNames)
         {
-            var splitedNames = SeparateName(name);
+            var splitNames = SeparateName(name);
 
-            Assert.Equal(expectedNames, splitedNames);
+            Assert.Equal(expectedNames, splitNames);
         }
 
         //TODO Implementation of name converter is rewritten here because domain converter has it as private method (maybe move it?)
         private string[] SeparateName(string name)
         {
-            var splitedNames = Regex
+            var splitNames = Regex
                 .Split(name, @"(?<=[\.\s])")
                 .Select(x => x.Trim())
                 .Where(x => !string.IsNullOrWhiteSpace(x))
                 .ToArray();
 
-            return splitedNames;
+            return splitNames;
         }
     }
 }

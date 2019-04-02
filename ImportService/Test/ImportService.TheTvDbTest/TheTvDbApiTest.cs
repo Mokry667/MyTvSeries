@@ -1,40 +1,46 @@
-﻿/*
-using MyTvSeries.TheTvDb;
-using MyTvSeries.TheTvDb.Json;
+﻿using System;
+using System.Linq;
+using ImportService.TheTvDb.Api;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
-namespace MyTvSeries.TheTvDbTest
+namespace ImportService.TheTvDbTest
 {
-    public class TheTvDbApiTest
+    public class TheTvDbApiTest : IDisposable
     {
+        private readonly TvDbApi _api;
+
+        public TheTvDbApiTest()
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                .AddJsonFile("testAppSettings.json", true, true)
+                .AddUserSecrets<TheTvDbApiTest>();
+
+            IConfiguration configuration = builder.Build();
+            ILoggerFactory loggerFactory = new LoggerFactory();
+
+            var logger = new Logger<ITvDbApi>(loggerFactory);
+
+            _api = new TvDbApi(logger, configuration);
+        }
+
+        public void Dispose() {}
+
         [Fact]
         public async void ShouldGetSupergirlSeries()
         {
-            var api = new TvDbApi();
-            await api.RefreshJwtToken();
-            var seriesJson = await api.GetSeries(295759);
-            Assert.NotNull(seriesJson);
+            await _api.RefreshJwtToken();
+            var seriesJson = await _api.GetSeries(295759);
+            Assert.Equal("Supergirl", seriesJson.SeriesName);
         }
 
         [Fact]
-        public async void ShouldGetSupergirlSeriesActors()
+        public async void ShouldGetAllSupergirlSeriesActors()
         {
-            var api = new TvDbApi();
-            await api.RefreshJwtToken();
-            var seriesActorsJson = await api.GetSeriesActors(295759);
-            Assert.NotNull(seriesActorsJson);
-        }
-
-        [Fact]
-        public async void ShouldGetSeriesAndConvertToDbForm()
-        {
-            var api = new TvDbApi();
-            await api.RefreshJwtToken();
-            var seriesJson = await api.GetSeries(295759);
-            IDomainConverter domainConverter = new DomainConverter();
-            var series = domainConverter.ConvertToSeries(seriesJson);
-            Assert.NotNull(series);      
+            await _api.RefreshJwtToken();
+            var seriesActorsJson = await _api.GetSeriesActors(295759);
+            Assert.Equal(14, seriesActorsJson.Count());
         }
     }
 }
-*/

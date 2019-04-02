@@ -1,9 +1,12 @@
-﻿using ImportService.TheMovieDb.Api;
+﻿using System;
+using ImportService.TheMovieDb.Api;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace ImportService.TheMovieDbTest
 {
-    public class MovieDbApiTest
+    public class MovieDbApiTest : IDisposable
     {
         // LOST id
         private readonly long _seriesId = 4607;
@@ -15,8 +18,19 @@ namespace ImportService.TheMovieDbTest
 
         public MovieDbApiTest()
         {
-            _api = new MovieDbApi();
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+                .AddJsonFile("testAppSettings.json", true, true)
+                .AddUserSecrets<MovieDbApiTest>();
+
+            IConfiguration configuration = builder.Build();
+            ILoggerFactory loggerFactory = new LoggerFactory();
+
+            var logger = new Logger<IMovieDbApi>(loggerFactory);
+
+            _api = new MovieDbApi(logger, configuration);
         }
+
+        public void Dispose() { }
 
         [Fact]
         public async void GetSeriesDetailsShouldGetLostSeriesForLostSeriesId()
@@ -33,21 +47,21 @@ namespace ImportService.TheMovieDbTest
         }
 
         [Fact]
-        public async void GetPersonDetailsShouldGetTerryQuinnForTerryQuinnId()
+        public async void GetGenresShouldGetDramaGenre()
         {
             var genresJson = await _api.GetGenres();
             Assert.Contains(genresJson.GenresJson, x => x.Name == "Drama");
         }
 
         [Fact]
-        public async void GetGenresShouldGetDramaGenre()
+        public async void GetPersonDetailsShouldGetTerryQuinnForTerryQuinnId()
         {
             var personDetailsJson = await _api.GetPersonDetails(_personId);
             Assert.Equal("Terry O'Quinn", personDetailsJson.Name);
         }
 
         [Fact]
-        public async void GetPersonExternalIdsShouldGeImdbIdForTerryQuinn()
+        public async void GetPersonExternalIdsShouldGetImdbIdForTerryQuinn()
         {
             var personExternalIdsJson = await _api.GetPersonExternalIds(_personId);
             Assert.Equal("nm0642368", personExternalIdsJson.ImdbId);
@@ -76,7 +90,9 @@ namespace ImportService.TheMovieDbTest
 
             await _api.SetUpImageApi();
 
-            await _api.GetImage(imagePath);
+            var image = await _api.GetImage(imagePath);
+
+            Assert.True(image.Length > 5000);
         }
     }
 }

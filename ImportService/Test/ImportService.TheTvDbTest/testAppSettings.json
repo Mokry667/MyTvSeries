@@ -1,0 +1,10 @@
+{
+  "TvDbApi": {
+    "ApiPrefix": "https://api.thetvdb.com"
+  },
+  "MovieDbApi": {
+    "ApiPrefix": "https://api.themoviedb.org",
+    "ApiVersion": "/3",
+    "ApiLanguage": "&language=en-US"
+  }
+}

@@ -25,7 +25,7 @@ namespace ImportService.Worker.MovieDb
         public async Task CreateSeriesNotificationsForUsers(Season season)
         {
             var usersWithReadNotifications = await _context.SeriesNotifications
-                .Where(x => x.SeriesId == season.SeriesId && x.IsRead == true)
+                .Where(x => x.SeriesId == season.SeriesId && x.IsRead)
                 .Select(x => x.UserId)
                 .ToListAsync();
 
@@ -48,7 +48,7 @@ namespace ImportService.Worker.MovieDb
         public async Task CreatePersonNotificationsForUsers(Character character)
         {
             var usersWithReadNotifications = await _context.PersonNotifications
-                .Where(x => x.PersonId == character.PersonId && x.IsRead == true)
+                .Where(x => x.PersonId == character.PersonId && x.IsRead)
                 .Select(x => x.UserId)
                 .ToListAsync();
 
@@ -105,7 +105,13 @@ namespace ImportService.Worker.MovieDb
 
         private string CreatePersonNotificationMessage(Character character)
         {
-            return $"[{character.PersonId}] will be playing as a [{character.Id}] in a [{character.SeriesCharacters.FirstOrDefault().SeriesId}] soon";
+            var seriesCharacters = character.SeriesCharacters.FirstOrDefault();
+            if (seriesCharacters != null)
+            {
+                return $"[{character.PersonId}] will be playing as a [{character.Id}] in a [{seriesCharacters.SeriesId}] soon";
+            }
+
+            return "Error generating notification message for - Please contact administrator";
         }
     }
 }

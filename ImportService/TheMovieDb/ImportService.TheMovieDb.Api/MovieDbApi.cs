@@ -37,16 +37,6 @@ namespace ImportService.TheMovieDb.Api
             _apiSuffix = "?api_key=" + apiKey + "&language=" + apiLanguage;
         }
 
-        //TODO for testing - delete later
-        public MovieDbApi()
-        {
-/*            var apiPrefix = "https://api.themoviedb.org";
-            _apiVersion = "/3";
-            var apiLanguage = "en-US";
-            _httpClient = new HttpClient { BaseAddress = new Uri(apiPrefix) };
-            _apiSuffix = "?api_key=" + apiKey + "&language=" + apiLanguage;*/
-        }
-
         #endregion
 
         public async Task SetUpImageApi()

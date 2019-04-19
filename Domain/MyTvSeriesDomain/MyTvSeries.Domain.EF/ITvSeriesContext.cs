@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MyTvSeries.Domain.Entities;
 
 namespace MyTvSeries.Domain.Ef
@@ -25,5 +27,7 @@ namespace MyTvSeries.Domain.Ef
         DbSet<SeriesNotification> SeriesNotifications { get; set; }
         DbSet<PersonNotification> PersonNotifications { get; set; }
         Task<int> SaveChangesAsync();
+        Task<EntityEntry> AddAsync(object entity, CancellationToken cancellationToken = default(CancellationToken));
+        EntityEntry Update(object entity);
     }
 }

@@ -37,6 +37,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTvSeries.Domain.Ef", "Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTvSeries.Domain", "Domain\MyTvSeriesDomain\MyTvSeries.Entities\MyTvSeries.Domain.csproj", "{3984AD29-65E1-474C-96DE-1ECFA0FFAE6E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{D83C144A-DEB4-4B5E-B2B4-62D1F1B5804D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTvSeries.Framework", "Framework\MyTvSeries.Framework\MyTvSeries.Framework.csproj", "{B0A2CBDC-ED34-400C-9666-658F56D417EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +87,10 @@ Global
 		{3984AD29-65E1-474C-96DE-1ECFA0FFAE6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3984AD29-65E1-474C-96DE-1ECFA0FFAE6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3984AD29-65E1-474C-96DE-1ECFA0FFAE6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0A2CBDC-ED34-400C-9666-658F56D417EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0A2CBDC-ED34-400C-9666-658F56D417EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0A2CBDC-ED34-400C-9666-658F56D417EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0A2CBDC-ED34-400C-9666-658F56D417EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +111,7 @@ Global
 		{17E5C44C-45C7-4237-B7C6-D9423C436026} = {92DE1658-2E42-4BF5-A540-8518884BBCA3}
 		{C6FB2520-259F-4D55-9395-F7F8459280CD} = {17E5C44C-45C7-4237-B7C6-D9423C436026}
 		{3984AD29-65E1-474C-96DE-1ECFA0FFAE6E} = {17E5C44C-45C7-4237-B7C6-D9423C436026}
+		{B0A2CBDC-ED34-400C-9666-658F56D417EA} = {D83C144A-DEB4-4B5E-B2B4-62D1F1B5804D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {39BA06E6-2084-4BBA-A534-98C22B8AB0EC}

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using MyTvSeries.Domain.Entities.Base;
 
 namespace MyTvSeries.Domain.Entities
 {
-    public class Season
+    public class Season : ImportEntity
     {
-        public long Id { get; set; }
         public long? MovieDbId { get; set; }
 
         public long SeriesId { get; set; }
@@ -18,13 +18,6 @@ namespace MyTvSeries.Domain.Entities
         public int? SeasonNumber { get; set; }
         public DateTime? AiredFrom { get; set; }
         public int? NumberOfEpisodes { get; set; }
-
-        public bool IsImportEnabled { get; set; }
-
-        public string CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string LastChangedBy { get; set; }
-        public DateTime? LastChangedAt { get; set; }
 
     }
 }

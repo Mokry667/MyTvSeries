@@ -1,12 +1,11 @@
 ﻿using MyTvSeries.Domain.Identity;
 using System;
+using MyTvSeries.Domain.Entities.Base;
 
 namespace MyTvSeries.Domain.Entities
 {
-    public class PersonNotification
+    public class PersonNotification : AuditEntity
     {
-        public long Id { get; set; }
-
         public long PersonId { get; set; }
         public virtual Person Person { get; set; }
 
@@ -15,10 +14,5 @@ namespace MyTvSeries.Domain.Entities
 
         public string Content { get; set; }
         public bool IsRead { get; set; }
-
-        public string CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string LastChangedBy { get; set; }
-        public DateTime? LastChangedAt { get; set; }
     }
 }

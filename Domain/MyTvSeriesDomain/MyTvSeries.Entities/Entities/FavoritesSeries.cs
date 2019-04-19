@@ -1,21 +1,14 @@
-﻿using System;
+﻿using MyTvSeries.Domain.Entities.Base;
 using MyTvSeries.Domain.Identity;
 
 namespace MyTvSeries.Domain.Entities
 {
-    public class FavoritesSeries
+    public class FavoritesSeries : AuditEntity
     {
-        public long Id { get; set; }
-
         public long? SeriesId { get; set; }
         public virtual Series Series { get; set; }
 
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
-
-        public string CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string LastChangedBy { get; set; }
-        public DateTime? LastChangedAt { get; set; }
     }
 }

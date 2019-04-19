@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Dynamitey;
+using Microsoft.Extensions.Logging;
 using MyTvSeries.Domain.Entities;
+using MyTvSeries.Domain.Entities.Base;
+using MyTvSeries.Framework;
 
 namespace ImportService.Worker.MovieDb
 {
@@ -8,91 +12,27 @@ namespace ImportService.Worker.MovieDb
         #region Properties
 
         private readonly ILogger<IMovieDbMapper> _logger;
+        private readonly ITypeCaster _typeCaster;
 
         #endregion
 
         #region Ctors
 
-        public MovieDbMapper(ILogger<IMovieDbMapper> logger)
+        public MovieDbMapper(ILogger<IMovieDbMapper> logger, ITypeCaster typeCaster)
         {
             _logger = logger;
+            _typeCaster = typeCaster;
         }
 
         #endregion
 
         #region Public methods
 
-        public Series MapSeriesFromImportToSeriesFromDb(Series seriesFromDb, Series seriesFromImport)
+        public void MapFromImportToDb(BaseEntity entityFromDb, BaseEntity entityFromImport)
         {
-            seriesFromDb.Name = seriesFromImport.Name;
-            seriesFromDb.OriginalName = seriesFromImport.OriginalName;
-            seriesFromDb.Overview = seriesFromImport.Overview;
-            seriesFromDb.Status = seriesFromImport.Status;
-            seriesFromDb.AiredFrom = seriesFromImport.AiredFrom;
-            seriesFromDb.AiredTo = seriesFromImport.AiredTo;
-            seriesFromDb.NumberOfSeasons = seriesFromImport.NumberOfSeasons;
-            seriesFromDb.NumberOfEpisodes = seriesFromImport.NumberOfEpisodes;
-
-            // TODO maybe only in initial import (?)
-            seriesFromDb.PosterName = seriesFromImport.PosterName;
-            seriesFromDb.PosterContent = seriesFromImport.PosterContent;
-
-            return seriesFromDb;
-        }
-
-        public Person MapPersonFromImportToPersonFromDb(Person personFromDb, Person personFromImport)
-        {
-            personFromDb.Name = personFromImport.Name;
-            personFromDb.Gender = personFromImport.Gender;
-            personFromDb.Biography = personFromImport.Biography;
-            personFromDb.Birthday = personFromImport.Birthday;
-            personFromDb.Deathday = personFromImport.Deathday;
-            personFromDb.PlaceOfBirth = personFromImport.PlaceOfBirth;
-
-            // TODO maybe only in initial import (?)
-            personFromDb.PosterName = personFromImport.PosterName;
-            personFromDb.PosterContent = personFromImport.PosterContent;
-
-            return personFromDb;
-        }
-
-        public Season MapSeasonFromImportToSeasonFromDb(Season seasonFromDb, Season seasonFromImport)
-        {
-            seasonFromDb.Name = seasonFromImport.Name;
-            seasonFromDb.Overview = seasonFromImport.Overview;
-            seasonFromDb.SeasonNumber = seasonFromImport.SeasonNumber;
-            seasonFromDb.AiredFrom = seasonFromImport.AiredFrom;
-            seasonFromDb.NumberOfEpisodes = seasonFromImport.NumberOfEpisodes;
-
-            return seasonFromDb;
-        }
-
-        public Episode MapEpisodeFromImportToEpisodeFromDb(Episode episodeFromDb, Episode episodeFromImport)
-        {
-            episodeFromDb.Name = episodeFromImport.Name;
-            episodeFromDb.Overview = episodeFromImport.Overview;
-            episodeFromDb.Aired = episodeFromImport.Aired;
-            episodeFromDb.SeasonNumber = episodeFromImport.SeasonNumber;
-            episodeFromDb.SeasonEpisodeNumber = episodeFromImport.SeasonEpisodeNumber;
-            episodeFromDb.AbsoluteEpisodeNumber =
-                episodeFromImport.SeasonNumber * episodeFromImport.SeasonEpisodeNumber;
-
-            return episodeFromDb;
-        }
-
-        public Character MapCharacterFromImportToCharacterFromDb(Character characterFromDb, Character characterFromImport)
-        {
-            characterFromDb.Name = characterFromImport.Name;
-
-            return characterFromDb;
-        }
-
-        public Crew MapCrewFromImportToCrewFromDb(Crew crewFromDb, Crew crewFromImport)
-        {
-            crewFromDb.Department = crewFromImport.Department;
-            crewFromDb.Job = crewFromImport.Job;
-
-            return crewFromDb;
+            var entityFromDbDowncast = _typeCaster.CastToDerivedType(entityFromDb);
+            var entityFromImportDowncast = _typeCaster.CastToDerivedType(entityFromImport);
+            MapProperties(entityFromDbDowncast, entityFromImportDowncast);
         }
 
         public Series MapSeriesExternalIdsFromImportToSeriesFromDb(Series seriesFromDb, Series seriesFromImport)
@@ -117,7 +57,65 @@ namespace ImportService.Worker.MovieDb
 
         #region Private methods
 
+        private void MapProperties(Series seriesFromDb, Series seriesFromImport)
+        {
+            seriesFromDb.Name = seriesFromImport.Name;
+            seriesFromDb.OriginalName = seriesFromImport.OriginalName;
+            seriesFromDb.Overview = seriesFromImport.Overview;
+            seriesFromDb.Status = seriesFromImport.Status;
+            seriesFromDb.AiredFrom = seriesFromImport.AiredFrom;
+            seriesFromDb.AiredTo = seriesFromImport.AiredTo;
+            seriesFromDb.NumberOfSeasons = seriesFromImport.NumberOfSeasons;
+            seriesFromDb.NumberOfEpisodes = seriesFromImport.NumberOfEpisodes;
 
+            // TODO maybe only in initial import (?)
+            seriesFromDb.PosterName = seriesFromImport.PosterName;
+            seriesFromDb.PosterContent = seriesFromImport.PosterContent;
+        }
+
+        private void MapProperties(Person personFromDb, Person personFromImport)
+        {
+            personFromDb.Name = personFromImport.Name;
+            personFromDb.Gender = personFromImport.Gender;
+            personFromDb.Biography = personFromImport.Biography;
+            personFromDb.Birthday = personFromImport.Birthday;
+            personFromDb.Deathday = personFromImport.Deathday;
+            personFromDb.PlaceOfBirth = personFromImport.PlaceOfBirth;
+
+            // TODO maybe only in initial import (?)
+            personFromDb.PosterName = personFromImport.PosterName;
+            personFromDb.PosterContent = personFromImport.PosterContent;
+        }
+
+        private void MapProperties(Season seasonFromDb, Season seasonFromImport)
+        {
+            seasonFromDb.Name = seasonFromImport.Name;
+            seasonFromDb.Overview = seasonFromImport.Overview;
+            seasonFromDb.SeasonNumber = seasonFromImport.SeasonNumber;
+            seasonFromDb.AiredFrom = seasonFromImport.AiredFrom;
+            seasonFromDb.NumberOfEpisodes = seasonFromImport.NumberOfEpisodes;
+        }
+
+        private void MapProperties(Episode episodeFromDb, Episode episodeFromImport)
+        {
+            episodeFromDb.Name = episodeFromImport.Name;
+            episodeFromDb.Overview = episodeFromImport.Overview;
+            episodeFromDb.Aired = episodeFromImport.Aired;
+            episodeFromDb.SeasonNumber = episodeFromImport.SeasonNumber;
+            episodeFromDb.SeasonEpisodeNumber = episodeFromImport.SeasonEpisodeNumber;
+            episodeFromDb.AbsoluteEpisodeNumber = episodeFromImport.SeasonNumber * episodeFromImport.SeasonEpisodeNumber;
+        }
+
+        private void MapProperties(Character characterFromDb, Character characterFromImport)
+        {
+            characterFromDb.Name = characterFromImport.Name;
+        }
+
+        private void MapProperties(Crew crewFromDb, Crew crewFromImport)
+        {
+            crewFromDb.Department = crewFromImport.Department;
+            crewFromDb.Job = crewFromImport.Job;
+        }
 
         #endregion
     }

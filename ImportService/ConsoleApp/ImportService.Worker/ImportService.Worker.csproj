@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Framework\MyTvSeries.Framework\MyTvSeries.Framework.csproj" />
     <ProjectReference Include="..\..\TheMovieDb\ImportService.TheMovieDb.Api\ImportService.TheMovieDb.Api.csproj" />
     <ProjectReference Include="..\..\TheMovieDb\ImportService.TheMovieDb.Converter\ImportService.TheMovieDb.Converter.csproj" />
     <ProjectReference Include="..\..\TheTvDb\ImportService.TheTvDb.Converter\ImportService.TheTvDb.Converter.csproj" />

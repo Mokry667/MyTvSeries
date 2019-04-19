@@ -1,15 +1,11 @@
 ﻿using MyTvSeries.Domain.Entities;
+using MyTvSeries.Domain.Entities.Base;
 
 namespace ImportService.Worker.MovieDb
 {
     public interface IMovieDbMapper
     {
-        Series MapSeriesFromImportToSeriesFromDb(Series seriesFromDb, Series seriesFromImport);
-        Person MapPersonFromImportToPersonFromDb(Person personFromDb, Person personFromImport);
-        Season MapSeasonFromImportToSeasonFromDb(Season seasonFromDb, Season seasonFromImport);
-        Episode MapEpisodeFromImportToEpisodeFromDb(Episode episodeFromDb, Episode episodeFromImport);
-        Character MapCharacterFromImportToCharacterFromDb(Character characterFromDb, Character characterFromImport);
-        Crew MapCrewFromImportToCrewFromDb(Crew crewFromDb, Crew crewFromImport);
+        void MapFromImportToDb(BaseEntity entityFromDb, BaseEntity entityFromImport);
         Series MapSeriesExternalIdsFromImportToSeriesFromDb(Series seriesFromDb, Series seriesFromImport);
         Series MapSeriesBroadcastAndRuntimeFromImportToSeriesFromDb(Series seriesFromDb, Series seriesFromImport);
     }

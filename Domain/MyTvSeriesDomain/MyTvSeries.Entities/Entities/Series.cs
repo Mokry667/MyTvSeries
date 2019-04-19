@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using MyTvSeries.Domain.Entities.Base;
 using MyTvSeries.Domain.Enums;
 using MyTvSeries.Domain.ManyToMany;
 
 namespace MyTvSeries.Domain.Entities
 {
-    public class Series
+    public class Series : ImportEntity
     {
-        public long Id { get; set; }
         public long? TvDbId { get; set; }
         public long? MovieDbId { get; set; }
         public string ImdbId { get; set; }
@@ -52,12 +52,5 @@ namespace MyTvSeries.Domain.Entities
 
         public string PosterName { get; set; }
         public byte[] PosterContent { get; set; }
-
-        public bool IsImportEnabled { get; set; }
-
-        public string CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string LastChangedBy { get; set; }
-        public DateTime? LastChangedAt { get; set; }
     }
 }

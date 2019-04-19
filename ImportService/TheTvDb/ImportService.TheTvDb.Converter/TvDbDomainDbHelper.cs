@@ -67,8 +67,6 @@ namespace ImportService.TheTvDb.Converter
             return genre;
         }
 
-        // 
-
         #endregion
 
     }

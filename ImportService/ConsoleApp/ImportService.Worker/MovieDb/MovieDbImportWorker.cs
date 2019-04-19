@@ -266,7 +266,7 @@ namespace ImportService.Worker.MovieDb
 
                     seriesFromImport.PosterContent = poster;
 
-                    await _movieDbImportServiceDbHelper.AddOrUpdateSeries(seriesFromDb, seriesFromImport);
+                    await _movieDbImportServiceDbHelper.AddOrUpdate(seriesFromDb, seriesFromImport);
 
                     // Import seasons too because it is in seriesJson already
                     // get series id for season
@@ -286,7 +286,7 @@ namespace ImportService.Worker.MovieDb
                             .Where(x => x.MovieDbId == seasonFromImport.MovieDbId)
                             .FirstOrDefaultAsync();
 
-                        await _movieDbImportServiceDbHelper.AddOrUpdateSeason(seasonFromDb, seasonFromImport);
+                        await _movieDbImportServiceDbHelper.AddOrUpdate(seasonFromDb, seasonFromImport);
                     }
                 }
                 else
@@ -318,7 +318,7 @@ namespace ImportService.Worker.MovieDb
                         .FirstOrDefaultAsync();
 
 
-                    await _movieDbImportServiceDbHelper.AddOrUpdatePerson(personFromDb, personFromImport);
+                    await _movieDbImportServiceDbHelper.AddOrUpdate(personFromDb, personFromImport);
                 }
                 else
                 {
@@ -348,7 +348,7 @@ namespace ImportService.Worker.MovieDb
                                 .Where(x => x.MovieDbId == episodeFromImport.MovieDbId)
                                 .FirstOrDefaultAsync();
 
-                        await _movieDbImportServiceDbHelper.AddOrUpdateEpisode(episodeFromDb, episodeFromImport);
+                        await _movieDbImportServiceDbHelper.AddOrUpdate(episodeFromDb, episodeFromImport);
                     }
                 }
                 else
@@ -408,7 +408,7 @@ namespace ImportService.Worker.MovieDb
                                 _logger.LogInformation("Found more than one character with PersonId [{0}] and seriesId [{1}]", personFromDb.Id, seriesId);
                             }
 
-                            await _movieDbImportServiceDbHelper.AddOrUpdateCharacter(characterFromDb, characterFromImport);
+                            await _movieDbImportServiceDbHelper.AddOrUpdate(characterFromDb, characterFromImport);
                         }
                         else
                         {
@@ -440,7 +440,7 @@ namespace ImportService.Worker.MovieDb
                                 .Where(x => x.PersonId == personFromDb.Id)
                                 .FirstOrDefaultAsync();
 
-                            await _movieDbImportServiceDbHelper.AddOrUpdateCrew(crewFromDb, crewFromImport);
+                            await _movieDbImportServiceDbHelper.AddOrUpdate(crewFromDb, crewFromImport);
                         }
                         else
                         {
@@ -506,7 +506,7 @@ namespace ImportService.Worker.MovieDb
 
                 if (seriesJson != null)
                 {
-                    var seriesFromImport = _tvDbDomainConverter.ConvertToSeriesRuntimeAndBrodcast(seriesJson);
+                    var seriesFromImport = _tvDbDomainConverter.ConvertToSeriesRuntimeAndBroadcast(seriesJson);
 
                     var seriesFromDb = await _tvSeriesContext
                         .Series

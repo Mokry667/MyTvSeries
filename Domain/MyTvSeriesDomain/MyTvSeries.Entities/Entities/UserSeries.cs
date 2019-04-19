@@ -1,13 +1,12 @@
 ﻿using System;
+using MyTvSeries.Domain.Entities.Base;
 using MyTvSeries.Domain.Enums;
 using MyTvSeries.Domain.Identity;
 
 namespace MyTvSeries.Domain.Entities
 {
-    public class UserSeries
+    public class UserSeries : AuditEntity
     {
-        public long Id { get; set; }
-
         public long SeriesId { get; set; }
         public virtual Series Series { get; set; }
 
@@ -18,10 +17,5 @@ namespace MyTvSeries.Domain.Entities
         public int Rating { get; set; }
         public int SeasonsWatched { get; set; }
         public int EpisodesWatched { get; set; }
-
-        public string CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string LastChangedBy { get; set; }
-        public DateTime? LastChangedAt { get; set; }
     }
 }

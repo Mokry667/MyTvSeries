@@ -1,12 +1,10 @@
 ﻿using MyTvSeries.Domain.Identity;
-using System;
+using MyTvSeries.Domain.Entities.Base;
 
 namespace MyTvSeries.Domain.Entities
 {
-    public class SeriesNotification
+    public class SeriesNotification : AuditEntity
     {
-        public long Id { get; set; }
-
         public long SeriesId { get; set; }
         public virtual Series Series { get; set; }
 
@@ -15,10 +13,5 @@ namespace MyTvSeries.Domain.Entities
 
         public string Content { get; set; }
         public bool IsRead { get; set; }
-
-        public string CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string LastChangedBy { get; set; }
-        public DateTime? LastChangedAt { get; set; }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using MyTvSeries.Domain.Entities.Base;
 
 namespace MyTvSeries.Domain.Entities
 {
-    public class Episode
+    public class Episode : ImportEntity
     {
-        public long Id { get; set; }
         public long? MovieDbId { get; set; }
         public long? TvDbId { get; set; }
 
@@ -26,12 +26,5 @@ namespace MyTvSeries.Domain.Entities
         public decimal UserRating { get; set; }
 
         public int UserVotes { get; set; }
-
-        public bool IsImportEnabled { get; set; }
-
-        public string CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string LastChangedBy { get; set; }
-        public DateTime? LastChangedAt { get; set; }
     }
 }

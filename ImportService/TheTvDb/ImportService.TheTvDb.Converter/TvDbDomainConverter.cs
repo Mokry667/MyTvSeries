@@ -76,7 +76,7 @@ namespace ImportService.TheTvDb.Converter
             return series;
         }
 
-        public Series ConvertToSeriesRuntimeAndBrodcast(SeriesJson seriesJson)
+        public Series ConvertToSeriesRuntimeAndBroadcast(SeriesJson seriesJson)
         {
             // convert air time - 2 possible formats
             bool isParsed = DateTime.TryParseExact(seriesJson.AirsTime, "hh:mm tt",

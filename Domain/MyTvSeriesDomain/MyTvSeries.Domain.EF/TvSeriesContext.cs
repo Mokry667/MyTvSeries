@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MyTvSeries.Domain.Entities;
 using MyTvSeries.Domain.Identity;
 using MyTvSeries.Domain.ManyToMany;

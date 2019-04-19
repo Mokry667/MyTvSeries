@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using MyTvSeries.Domain.Entities.Base;
 using MyTvSeries.Domain.ManyToMany;
 
 namespace MyTvSeries.Domain.Entities
 {
-    public class Studio
+    public class Studio : ImportEntity
     {
-        public long Id { get; set; }
         public long? TvDbId { get; set; }
 
         public virtual Country Country { get; set; }
@@ -14,12 +13,5 @@ namespace MyTvSeries.Domain.Entities
 
         public string Name { get; set; }
         public string Description { get; set; }
-
-        public bool IsImportEnabled { get; set; }
-
-        public string CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public string LastChangedBy { get; set; }
-        public DateTime? LastChangedAt { get; set; }
     }
 }

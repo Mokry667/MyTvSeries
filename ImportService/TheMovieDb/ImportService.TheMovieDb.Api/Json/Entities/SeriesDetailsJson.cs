@@ -41,7 +41,6 @@ namespace ImportService.TheMovieDb.Api.Json.Entities
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        // TODO determine type
         [JsonProperty("next_episode_to_air")]
         public object NextEpisodeToAir { get; set; }
 
